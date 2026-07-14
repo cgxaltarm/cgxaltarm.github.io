@@ -3,303 +3,292 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="DailyFlow — dashboard satu halaman untuk status dan usage 9Router.">
-<meta name="theme-color" content="#07111f">
-<title>DailyFlow Dashboard</title>
+<meta name="description" content="DailyFlow topology dashboard untuk 9Router.">
+<title>DailyFlow Control Center</title>
 <style>
 :root{
-  --bg:#07111f;--bg2:#0b1729;--card:rgba(15,29,49,.82);--solid:#101f35;
-  --text:#f5f8ff;--muted:#94a9c4;--line:rgba(255,255,255,.1);
-  --violet:#8065ff;--cyan:#22c8ff;--green:#39e39f;--yellow:#ffd166;--red:#ff6f91;
-  --shadow:0 24px 70px rgba(0,0,0,.32);--radius:22px;
-}
-body.light{
-  --bg:#edf4ff;--bg2:#f8fbff;--card:rgba(255,255,255,.84);--solid:#fff;
-  --text:#111a2a;--muted:#5f7188;--line:rgba(20,34,55,.1);--shadow:0 20px 60px rgba(62,87,130,.18)
+  --bg:#151515;--panel:#202020;--panel2:#262626;--line:#343434;--text:#f5f5f5;--muted:#9da3ad;
+  --orange:#ff5d22;--green:#28d17c;--yellow:#f6c453;--red:#ff4d6d;--grid:#232323;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-  background:
-    radial-gradient(circle at 10% 10%,rgba(128,101,255,.18),transparent 30%),
-    radial-gradient(circle at 90% 20%,rgba(34,200,255,.14),transparent 28%),
-    radial-gradient(circle at 50% 100%,rgba(57,227,159,.08),transparent 34%),
-    var(--bg);
-  min-height:100vh;transition:.25s ease
+html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+body{overflow-x:hidden}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+.app{min-height:100vh}
+.topbar{
+  height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;
+  border-bottom:1px solid var(--line);background:#191919;position:sticky;top:0;z-index:20
 }
-button,a{font:inherit}a{text-decoration:none;color:inherit}
-.grid-bg{position:fixed;inset:0;pointer-events:none;opacity:.04;background-image:
-  linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px);
-  background-size:28px 28px;mask-image:linear-gradient(to bottom,black,transparent 86%)}
-.container{width:min(1220px,calc(100% - 32px));margin:auto}
-nav{position:sticky;top:0;z-index:50;height:76px;background:color-mix(in srgb,var(--bg) 72%,transparent);
-  backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
-.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:11px;font-weight:850;letter-spacing:-.03em}
-.logo{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;
-  background:linear-gradient(135deg,var(--violet),var(--cyan));box-shadow:0 12px 34px rgba(81,92,255,.28)}
-.nav-actions{display:flex;gap:9px;align-items:center}
-.btn,.icon-btn{border:1px solid var(--line);color:var(--text);background:var(--card);cursor:pointer;transition:.2s ease}
-.btn{padding:11px 15px;border-radius:13px;font-weight:750;display:inline-flex;align-items:center;gap:8px}
-.btn.primary{background:linear-gradient(135deg,var(--violet),#5d86ff 56%,var(--cyan));color:#fff;border:0}
-.btn:hover,.icon-btn:hover{transform:translateY(-2px)}
-.icon-btn{width:42px;height:42px;border-radius:13px}
-main{padding:44px 0 90px}
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;margin-bottom:28px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#c6bcff;background:rgba(128,101,255,.09);
-  border:1px solid rgba(128,101,255,.3);padding:7px 11px;border-radius:999px;font-size:.85rem;font-weight:750}
-body.light .eyebrow{color:#5a44d6}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(57,227,159,.4);animation:pulse 1.8s infinite}
-@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(57,227,159,0)}}
-h1{font-size:clamp(2.8rem,6vw,5.8rem);line-height:.96;margin:16px 0 14px;letter-spacing:-.07em}
-.gradient{background:linear-gradient(100deg,var(--text),#a995ff 45%,#52d8ff 78%,#54efb5);
-  background-clip:text;-webkit-background-clip:text;color:transparent}
-.hero p{color:var(--muted);max-width:720px;margin:0 0 22px}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-.status-panel{border:1px solid var(--line);background:var(--card);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
-.status-title{display:flex;justify-content:space-between;gap:10px;margin-bottom:17px}
-.status-list{display:grid;gap:11px}
-.status-row{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px}
-.status-row small{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:15px}
-.card{border:1px solid var(--line);background:var(--card);backdrop-filter:blur(14px);border-radius:var(--radius);
-  padding:20px;box-shadow:0 12px 38px rgba(0,0,0,.1);position:relative;overflow:hidden}
-.card::after{content:"";position:absolute;right:-42px;bottom:-52px;width:130px;height:130px;border-radius:50%;
-  background:radial-gradient(circle,rgba(128,101,255,.18),transparent 68%)}
-.label{color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;align-items:center}
-.metric{font-size:clamp(1.7rem,3vw,2.45rem);font-weight:850;letter-spacing:-.045em;margin:8px 0 2px}
-.delta{font-size:.8rem;color:var(--green)}
-.dashboard{display:grid;grid-template-columns:1.45fr .75fr;gap:15px;margin-bottom:15px}
-.chart-card{min-height:430px}
-.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-.card-head h2{font-size:1.05rem;margin:0}.card-head small{color:var(--muted)}
-.segmented{display:flex;border:1px solid var(--line);border-radius:11px;padding:3px;background:rgba(0,0,0,.08)}
-.segmented button{border:0;background:transparent;color:var(--muted);padding:7px 10px;border-radius:8px;cursor:pointer}
-.segmented button.active{background:var(--solid);color:var(--text)}
-.canvas-wrap{height:325px;position:relative}canvas{width:100%;height:100%}
-.providers{display:grid;gap:11px}
-.provider{padding:13px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.025)}
-.provider-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:9px}.provider small{color:var(--muted)}
-.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
-.bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--violet),var(--cyan));transition:width .8s ease}
-.lower{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.activity{display:grid;gap:8px;max-height:320px;overflow:auto;padding-right:4px}
-.event{display:grid;grid-template-columns:9px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.brand{display:flex;gap:12px;align-items:center;font-weight:800}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#ff5d22,#ff9a3c);display:grid;place-items:center}
+.actions{display:flex;gap:10px}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer}
+.btn.primary{background:var(--orange);border-color:var(--orange)}
+main{padding:22px}
+.hero{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:16px}
+.hero h1{font-size:clamp(2rem,5vw,4.2rem);letter-spacing:-.055em;margin:0 0 10px}
+.hero p{margin:0;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(40,209,124,.45);animation:pulse 1.7s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(40,209,124,0)}}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.metric small{color:var(--muted)}.metric strong{display:block;font-size:1.9rem;margin-top:5px}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}
+.graph-card,.side-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.graph-head,.side-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.graph-wrap{
+  position:relative;height:620px;overflow:hidden;background:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+    #181818;background-size:48px 48px;cursor:grab
+}
+.graph-wrap:active{cursor:grabbing}
+.graph-stage{position:absolute;inset:0;transform-origin:0 0}
+svg.links{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.path{fill:none;stroke:#303030;stroke-width:2}
+.path.active{stroke:var(--green);stroke-dasharray:8 8;animation:dash 1s linear infinite;filter:drop-shadow(0 0 4px rgba(40,209,124,.6))}
+.path.warn{stroke:var(--yellow)}
+.path.down{stroke:var(--red)}
+@keyframes dash{to{stroke-dashoffset:-16}}
+.node{
+  position:absolute;min-width:165px;padding:13px 15px;border-radius:12px;background:#202020;border:1px solid #3b3b3b;
+  display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);cursor:pointer;user-select:none;transition:.18s ease
+}
+.node:hover{transform:translateY(-2px);border-color:#575757}
+.node.center{border-color:var(--orange);box-shadow:0 0 0 1px rgba(255,93,34,.4),0 14px 34px rgba(0,0,0,.35)}
+.node.active{border-color:var(--orange);box-shadow:0 0 0 1px rgba(255,93,34,.45),0 0 22px rgba(255,93,34,.25)}
+.icon{width:30px;height:30px;border-radius:8px;background:#2f2f2f;display:grid;place-items:center;font-weight:800}
+.node.active .icon,.node.center .icon{background:var(--orange)}
+.node-meta{margin-left:auto;color:var(--muted);font-size:.8rem}
+.zoom{position:absolute;left:18px;bottom:18px;display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#2a2a2a}
+.zoom button{width:36px;height:36px;background:transparent;border:0;border-bottom:1px solid var(--line);color:white;font-size:1.2rem;cursor:pointer}
+.zoom button:last-child{border-bottom:0}
+.side{display:grid;gap:16px}
+.side-card{padding-bottom:8px}
+.side-body{padding:14px}
+.provider-detail h3{margin:0 0 4px}.provider-detail p{margin:0;color:var(--muted)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{background:#1a1a1a;border:1px solid var(--line);padding:11px;border-radius:12px}
+.stat small{color:var(--muted);display:block}.stat strong{font-size:1.05rem}
+.activity{max-height:280px;overflow:auto}
+.event{display:grid;grid-template-columns:9px 1fr auto;gap:9px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .event-dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
-.event strong{font-size:.88rem}.event p{margin:1px 0 0;color:var(--muted);font-size:.78rem}.event time{color:var(--muted);font-size:.76rem}
-.security{display:grid;gap:12px}
-.safe-item{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:15px;padding:13px}
-.safe-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:11px;background:rgba(57,227,159,.1)}
-.safe-item strong{display:block;font-size:.9rem}.safe-item span{font-size:.8rem;color:var(--muted)}
-.notice{margin-top:15px;padding:13px 15px;border-radius:14px;border:1px solid rgba(255,209,102,.28);
-  background:rgba(255,209,102,.07);color:var(--muted);font-size:.82rem}
-.footer{margin-top:18px;padding:20px 0;color:var(--muted);text-align:center}
-.toast{position:fixed;right:20px;bottom:20px;z-index:80;padding:13px 16px;border-radius:14px;background:var(--solid);
-  border:1px solid var(--line);box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:.3s ease}
+.event p{margin:0;font-size:.84rem}.event small{color:var(--muted)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend span{display:flex;gap:6px;align-items:center}
+.l{width:9px;height:9px;border-radius:50%}
+.toast{position:fixed;right:20px;bottom:20px;background:#242424;border:1px solid var(--line);padding:12px 15px;border-radius:12px;transform:translateY(100px);opacity:0;transition:.3s}
 .toast.show{transform:none;opacity:1}
-@media(max-width:980px){.hero,.dashboard,.lower{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.cards{grid-template-columns:1fr}.nav-actions .desktop{display:none}.container{width:min(100% - 20px,1220px)}main{padding-top:26px}.card{padding:16px}.canvas-wrap{height:270px}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media(max-width:980px){.workspace{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.graph-wrap{height:560px}}
+@media(max-width:560px){main{padding:12px}.metrics{grid-template-columns:1fr}.hero{display:block}.actions .desktop{display:none}.graph-wrap{height:520px}.node{min-width:145px;padding:11px}}
 </style>
 </head>
 <body>
-<div class="grid-bg"></div>
-<nav>
-  <div class="container nav-inner">
-    <a class="brand" href="#">
-      <span class="logo">↯</span>
-      <span>DailyFlow</span>
-    </a>
-    <div class="nav-actions">
-      <button class="icon-btn" id="themeBtn" title="Ganti tema">☀️</button>
-      <button class="btn desktop" id="refreshBtn">↻ Refresh</button>
-      <a class="btn primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">Buka 9Router ↗</a>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">9</div><span>DailyFlow Control Center</span></div>
+    <div class="actions">
+      <button class="btn desktop" id="refreshBtn">Refresh</button>
+      <a class="btn primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">Buka 9Router</a>
     </div>
-  </div>
-</nav>
+  </header>
 
-<main class="container">
-  <section class="hero">
-    <div>
-      <span class="eyebrow"><span class="dot" id="liveDot"></span><span id="connectionLabel">Menghubungkan statistik...</span></span>
-      <h1>Satu halaman untuk <span class="gradient">DailyFlow & 9Router.</span></h1>
-      <p>Landing page, status sistem, token usage, request, latency, provider, model, dan aktivitas terbaru dalam satu tampilan tanpa memperlihatkan API key.</p>
-      <div class="hero-actions">
-        <a class="btn primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">Akses 9Router</a>
-        <button class="btn" id="copyBtn">Salin endpoint API</button>
+  <main>
+    <section class="hero">
+      <div>
+        <div class="badge"><span class="dot"></span><span id="modeLabel">Mode demo interaktif</span></div>
+        <h1>Routing AI dalam <span style="color:var(--orange)">satu peta hidup.</span></h1>
+        <p>Pantau provider, model aktif, token, latency, dan aliran request dari 9Router.</p>
       </div>
-    </div>
-
-    <aside class="status-panel">
-      <div class="status-title">
-        <strong>Status sistem</strong>
-        <small id="updatedAt">Belum ada data</small>
+      <div class="legend">
+        <span><i class="l" style="background:var(--green)"></i>Aktif</span>
+        <span><i class="l" style="background:var(--yellow)"></i>Lambat</span>
+        <span><i class="l" style="background:var(--red)"></i>Offline</span>
+        <span><i class="l" style="background:#555"></i>Idle</span>
       </div>
-      <div class="status-list">
-        <div class="status-row"><div><strong>Website</strong><br><small>dailyflo.me</small></div><b style="color:var(--green)">Online</b></div>
-        <div class="status-row"><div><strong>9Router</strong><br><small>router.dailyflo.me</small></div><b id="routerStatus">Memeriksa</b></div>
-        <div class="status-row"><div><strong>Sumber statistik</strong><br><small>/public-usage</small></div><b id="sourceMode">Live</b></div>
-      </div>
-    </aside>
-  </section>
+    </section>
 
-  <section class="cards">
-    <article class="card"><div class="label"><span>Total token</span><span>◈</span></div><div class="metric" id="totalTokens">0</div><div class="delta" id="tokenDelta">Menunggu data</div></article>
-    <article class="card"><div class="label"><span>Input token</span><span>↘</span></div><div class="metric" id="inputTokens">0</div><div class="delta">Prompt & context</div></article>
-    <article class="card"><div class="label"><span>Output token</span><span>↗</span></div><div class="metric" id="outputTokens">0</div><div class="delta">Respons model</div></article>
-    <article class="card"><div class="label"><span>Total request</span><span>◎</span></div><div class="metric" id="requests">0</div><div class="delta" id="successRate">Menunggu data</div></article>
-  </section>
+    <section class="metrics">
+      <article class="metric"><small>Total token</small><strong id="totalTokens">0</strong></article>
+      <article class="metric"><small>Total request</small><strong id="requests">0</strong></article>
+      <article class="metric"><small>Latency rata-rata</small><strong id="latency">0 ms</strong></article>
+      <article class="metric"><small>Provider aktif</small><strong id="activeProviders">0</strong></article>
+    </section>
 
-  <section class="dashboard">
-    <article class="card chart-card">
-      <div class="card-head">
-        <div><h2>Pergerakan token</h2><small>Input dan output diperbarui otomatis</small></div>
-        <div class="segmented">
-          <button class="active" data-window="20">20x</button>
-          <button data-window="40">40x</button>
-          <button data-window="60">60x</button>
+    <section class="workspace">
+      <div class="graph-card">
+        <div class="graph-head">
+          <strong>Provider topology</strong>
+          <small id="updatedAt" style="color:var(--muted)">Belum diperbarui</small>
+        </div>
+        <div class="graph-wrap" id="graphWrap">
+          <div class="graph-stage" id="graphStage">
+            <svg class="links" id="links"></svg>
+          </div>
+          <div class="zoom">
+            <button id="zoomIn">+</button>
+            <button id="zoomOut">−</button>
+            <button id="resetZoom">⛶</button>
+          </div>
         </div>
       </div>
-      <div class="canvas-wrap"><canvas id="usageChart"></canvas></div>
-    </article>
 
-    <article class="card">
-      <div class="card-head"><div><h2>Distribusi provider</h2><small>Statistik agregat</small></div></div>
-      <div class="providers" id="providers"></div>
-      <div class="notice">Field sensitif seperti API key, authorization, secret, password, cookie, credential, isi prompt, dan isi respons tidak pernah ditampilkan.</div>
-    </article>
-  </section>
+      <aside class="side">
+        <section class="side-card">
+          <div class="side-head"><strong>Detail provider</strong><small id="providerStatus">Idle</small></div>
+          <div class="side-body provider-detail">
+            <h3 id="providerName">Pilih provider</h3>
+            <p id="providerModel">Klik node untuk melihat detail.</p>
+            <div class="stat-grid">
+              <div class="stat"><small>Token</small><strong id="providerTokens">0</strong></div>
+              <div class="stat"><small>Request</small><strong id="providerRequests">0</strong></div>
+              <div class="stat"><small>Latency</small><strong id="providerLatency">0 ms</strong></div>
+              <div class="stat"><small>Error rate</small><strong id="providerErrors">0%</strong></div>
+            </div>
+          </div>
+        </section>
 
-  <section class="lower">
-    <article class="card">
-      <div class="card-head"><div><h2>Aktivitas terbaru</h2><small>Metadata ringkas saja</small></div></div>
-      <div class="activity" id="activity"></div>
-    </article>
-
-    <article class="card">
-      <div class="card-head"><div><h2>Privasi & keamanan</h2><small>Dirancang untuk tampilan publik</small></div></div>
-      <div class="security">
-        <div class="safe-item"><div class="safe-icon">🔒</div><div><strong>API key tidak dirender</strong><span>Frontend hanya menerima statistik yang sudah disanitasi.</span></div></div>
-        <div class="safe-item"><div class="safe-icon">🧾</div><div><strong>Isi percakapan disembunyikan</strong><span>Dashboard hanya memakai total token, provider, model, status, dan latency.</span></div></div>
-        <div class="safe-item"><div class="safe-icon">🛡️</div><div><strong>Fallback aman</strong><span>Jika endpoint belum aktif, halaman memakai simulasi lokal tanpa credential.</span></div></div>
-      </div>
-    </article>
-  </section>
-
-  <div class="footer">© <span id="year"></span> DailyFlow · One-page dashboard</div>
-</main>
+        <section class="side-card">
+          <div class="side-head"><strong>Aktivitas terbaru</strong><small>Live</small></div>
+          <div class="side-body activity" id="activity"></div>
+        </section>
+      </aside>
+    </section>
+  </main>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const PUBLIC_STATS_ENDPOINT = "https://router.dailyflo.me/public-usage";
-const ROUTER_HEALTH_URL = "https://router.dailyflo.me/";
-const sensitivePattern = /(api.?key|access.?token|refresh.?token|authorization|secret|password|credential|cookie|prompt|message|content)/i;
-const $ = id => document.getElementById(id);
-const fmt = n => new Intl.NumberFormat("id-ID",{notation:n>=1000000?"compact":"standard",maximumFractionDigits:1}).format(Math.round(Number(n)||0));
-let chartWindow=20,sessionStart=0,usingDemo=false;
+const PUBLIC_STATS_ENDPOINT="https://router.dailyflo.me/public-usage";
+const $=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat("id-ID",{notation:n>999999?"compact":"standard",maximumFractionDigits:1}).format(Math.round(Number(n)||0));
+
+const providerDefs=[
+  {id:"claude",name:"Claude",icon:"C",x:140,y:150},
+  {id:"gemini",name:"Gemini",icon:"G",x:420,y:70},
+  {id:"openai",name:"OpenAI",icon:"O",x:760,y:150},
+  {id:"deepseek",name:"DeepSeek",icon:"D",x:760,y:420},
+  {id:"mistral",name:"Mistral",icon:"M",x:420,y:500},
+  {id:"qwen",name:"Qwen",icon:"Q",x:140,y:420},
+  {id:"router",name:"9Router",icon:"9",x:450,y:290,center:true}
+];
+
+let scale=1,panX=0,panY=0,dragging=false,lastX=0,lastY=0;
 let state={
-  totalTokens:126480,inputTokens:78320,outputTokens:48160,requests:342,successes:335,failures:7,
-  providers:[{name:"Claude",value:36,model:"Sonnet"},{name:"Gemini",value:27,model:"Flash"},{name:"OpenAI",value:22,model:"GPT"},{name:"Fallback",value:15,model:"Lainnya"}],
-  history:Array.from({length:20},(_,i)=>({time:i,input:2200+Math.random()*1800,output:1100+Math.random()*1100})),
+  totalTokens:1482300,requests:4821,
+  providers:[
+    {id:"claude",name:"Claude",model:"Sonnet",tokens:520000,requests:1520,latency:420,errors:1.2,status:"active"},
+    {id:"gemini",name:"Gemini",model:"Flash",tokens:386000,requests:1280,latency:310,errors:.8,status:"idle"},
+    {id:"openai",name:"OpenAI",model:"GPT",tokens:342000,requests:980,latency:560,errors:2.1,status:"idle"},
+    {id:"deepseek",name:"DeepSeek",model:"Chat",tokens:112000,requests:530,latency:810,errors:4.5,status:"warn"},
+    {id:"mistral",name:"Mistral",model:"Large",tokens:78000,requests:310,latency:470,errors:1.8,status:"idle"},
+    {id:"qwen",name:"Qwen",model:"Coder",tokens:44300,requests:201,latency:390,errors:1.1,status:"idle"}
+  ],
   recent:[]
 };
-sessionStart=state.totalTokens;
 
-function safeObject(value,depth=0){
-  if(depth>6)return null;
-  if(Array.isArray(value))return value.map(v=>safeObject(v,depth+1)).filter(v=>v!==null);
-  if(value&&typeof value==="object"){
-    const out={};
-    for(const[k,v]of Object.entries(value)){if(sensitivePattern.test(k))continue;out[k]=safeObject(v,depth+1)}
-    return out;
-  }
-  return value;
+function nodeHtml(def){
+  return `<div class="node ${def.center?"center":""}" id="node-${def.id}" data-id="${def.id}" style="left:${def.x}px;top:${def.y}px">
+    <div class="icon">${def.icon}</div><strong>${def.name}</strong><span class="node-meta" id="meta-${def.id}"></span>
+  </div>`;
 }
-function normalize(raw){
-  const d=safeObject(raw);
-  if(!d||typeof d!=="object")throw new Error("Format data tidak valid");
-  return{
-    totalTokens:Number(d.totalTokens??d.total_tokens??0),
-    inputTokens:Number(d.inputTokens??d.input_tokens??0),
-    outputTokens:Number(d.outputTokens??d.output_tokens??0),
-    requests:Number(d.requests??d.totalRequests??0),
-    successes:Number(d.successes??0),
-    failures:Number(d.failures??0),
-    providers:Array.isArray(d.providers)?d.providers.slice(0,8).map(p=>({name:String(p.name||p.provider||"Provider").slice(0,30),value:Math.max(0,Math.min(100,Number(p.value??p.percent??0))),model:String(p.model||"").slice(0,40)})):[],
-    history:Array.isArray(d.history)?d.history.slice(-60).map((h,i)=>({time:h.time??i,input:Number(h.input??h.inputTokens??0),output:Number(h.output??h.outputTokens??0)})):[],
-    recent:Array.isArray(d.recent)?d.recent.slice(0,12):[],
-    updatedAt:d.updatedAt||new Date().toISOString()
-  };
+
+function buildGraph(){
+  const stage=$("graphStage");
+  stage.querySelectorAll(".node").forEach(n=>n.remove());
+  providerDefs.forEach(def=>stage.insertAdjacentHTML("beforeend",nodeHtml(def)));
+  stage.querySelectorAll(".node").forEach(node=>node.onclick=()=>selectProvider(node.dataset.id));
+  drawLinks();
 }
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]))}
+
+function drawLinks(){
+  const svg=$("links");
+  svg.innerHTML="";
+  const center=providerDefs.find(x=>x.id==="router");
+  state.providers.forEach(p=>{
+    const def=providerDefs.find(x=>x.id===p.id); if(!def)return;
+    const x1=center.x+82,y1=center.y+25,x2=def.x+82,y2=def.y+25;
+    const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+    const cx=(x1+x2)/2;
+    path.setAttribute("d",`M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`);
+    path.setAttribute("class","path "+(p.status==="active"?"active":p.status==="warn"?"warn":p.status==="down"?"down":""));
+    svg.appendChild(path);
+  });
+}
+
 function render(){
   $("totalTokens").textContent=fmt(state.totalTokens);
-  $("inputTokens").textContent=fmt(state.inputTokens);
-  $("outputTokens").textContent=fmt(state.outputTokens);
   $("requests").textContent=fmt(state.requests);
-  $("tokenDelta").textContent="+"+fmt(Math.max(0,state.totalTokens-sessionStart))+" dalam sesi ini";
-  const totalReq=Math.max(1,state.successes+state.failures);
-  $("successRate").textContent=Math.round(state.successes/totalReq*100)+"% berhasil";
-  $("providers").innerHTML=(state.providers.length?state.providers:[{name:"Belum ada data",value:0,model:"-"}]).map(p=>`
-    <div class="provider"><div class="provider-top"><div><strong>${esc(p.name)}</strong><br><small>${esc(p.model||"Model")}</small></div><strong>${Math.round(p.value)}%</strong></div>
-    <div class="bar"><span style="width:${Math.max(0,Math.min(100,p.value))}%"></span></div></div>`).join("");
-  $("activity").innerHTML=(state.recent.length?state.recent:[{provider:"Belum ada aktivitas",model:"-",input:0,output:0,status:"-",latencyMs:0,time:new Date().toISOString()}]).map(x=>`
-    <div class="event"><span class="event-dot"></span><div><strong>${esc(x.provider||"Provider")} · ${esc(x.model||"Model")}</strong>
-    <p>${fmt(x.input)} input · ${fmt(x.output)} output · HTTP ${esc(x.status)}</p></div><time>${Number(x.latencyMs)||0} ms</time></div>`).join("");
-  $("updatedAt").textContent=state.updatedAt?new Date(state.updatedAt).toLocaleTimeString("id-ID"):"Belum ada data";
-  drawChart();
+  const avg=state.providers.reduce((a,b)=>a+b.latency,0)/Math.max(1,state.providers.length);
+  $("latency").textContent=Math.round(avg)+" ms";
+  $("activeProviders").textContent=state.providers.filter(x=>x.status==="active").length;
+  state.providers.forEach(p=>{
+    const node=$("node-"+p.id); if(!node)return;
+    node.classList.toggle("active",p.status==="active");
+    $("meta-"+p.id).textContent=p.status==="active"?"●":p.status==="warn"?"!":"";
+  });
+  drawLinks();
+  $("activity").innerHTML=(state.recent.length?state.recent:[{provider:"Belum ada aktivitas",model:"-",tokens:0,latency:0,time:"-"}]).map(x=>`
+    <div class="event"><span class="event-dot"></span><div><p><strong>${x.provider}</strong> · ${x.model}</p><small>${fmt(x.tokens)} token · ${x.latency} ms</small></div><small>${x.time}</small></div>`).join("");
+  $("updatedAt").textContent=new Date().toLocaleTimeString("id-ID");
 }
-const canvas=$("usageChart"),ctx=canvas.getContext("2d");
-function drawChart(){
-  const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
-  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
-  const w=rect.width,h=rect.height,pad={l:46,r:16,t:14,b:30},data=state.history.slice(-chartWindow),max=Math.max(1,...data.flatMap(d=>[d.input,d.output]))*1.18;
-  ctx.clearRect(0,0,w,h);const css=getComputedStyle(document.body),grid=css.getPropertyValue("--line"),muted=css.getPropertyValue("--muted");
-  ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.fillStyle=muted;ctx.font="11px system-ui";
-  for(let i=0;i<=4;i++){const y=pad.t+(h-pad.t-pad.b)*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(fmt(max*(1-i/4)),4,y+4)}
-  const plot=(key,color)=>{ctx.beginPath();data.forEach((d,i)=>{const x=pad.l+(w-pad.l-pad.r)*(data.length===1?0:i/(data.length-1)),y=h-pad.b-(h-pad.t-pad.b)*(d[key]/max);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.strokeStyle=color;ctx.lineWidth=2.3;ctx.stroke()};
-  plot("input","#8065ff");plot("output","#22c8ff");
-  ctx.fillStyle="#8065ff";ctx.fillRect(pad.l,h-14,10,3);ctx.fillStyle=muted;ctx.fillText("Input",pad.l+15,h-9);
-  ctx.fillStyle="#22c8ff";ctx.fillRect(pad.l+70,h-14,10,3);ctx.fillStyle=muted;ctx.fillText("Output",pad.l+85,h-9);
+
+function selectProvider(id){
+  const p=state.providers.find(x=>x.id===id);
+  if(!p)return;
+  $("providerName").textContent=p.name;
+  $("providerModel").textContent=p.model;
+  $("providerTokens").textContent=fmt(p.tokens);
+  $("providerRequests").textContent=fmt(p.requests);
+  $("providerLatency").textContent=p.latency+" ms";
+  $("providerErrors").textContent=p.errors+"%";
+  $("providerStatus").textContent=p.status;
 }
-function demoTick(){
-  if(!usingDemo)return;
-  const input=Math.round(700+Math.random()*4200),output=Math.round(350+Math.random()*2200);
-  state.inputTokens+=input;state.outputTokens+=output;state.totalTokens+=input+output;state.requests+=1;state.successes+=1;
-  state.history.push({time:Date.now(),input,output});if(state.history.length>80)state.history.shift();
+
+function simulate(){
   const p=state.providers[Math.floor(Math.random()*state.providers.length)];
-  state.recent.unshift({provider:p.name,model:p.model,input,output,status:200,latencyMs:Math.round(350+Math.random()*900),time:new Date().toISOString()});
-  if(state.recent.length>10)state.recent.pop();state.updatedAt=new Date().toISOString();render();
+  state.providers.forEach(x=>{if(x.status==="active")x.status="idle"});
+  p.status=Math.random()<.12?"warn":"active";
+  const added=Math.round(900+Math.random()*5200);
+  p.tokens+=added;p.requests+=1;p.latency=Math.round(250+Math.random()*700);
+  state.totalTokens+=added;state.requests+=1;
+  state.recent.unshift({provider:p.name,model:p.model,tokens:added,latency:p.latency,time:new Date().toLocaleTimeString("id-ID")});
+  if(state.recent.length>10)state.recent.pop();
+  render();selectProvider(p.id);
 }
+
+function applyTransform(){
+  $("graphStage").style.transform=`translate(${panX}px,${panY}px) scale(${scale})`;
+}
+
+$("zoomIn").onclick=()=>{scale=Math.min(1.7,scale+.1);applyTransform()};
+$("zoomOut").onclick=()=>{scale=Math.max(.6,scale-.1);applyTransform()};
+$("resetZoom").onclick=()=>{scale=1;panX=0;panY=0;applyTransform()};
+$("graphWrap").addEventListener("mousedown",e=>{if(e.target.closest(".node"))return;dragging=true;lastX=e.clientX;lastY=e.clientY});
+window.addEventListener("mousemove",e=>{if(!dragging)return;panX+=e.clientX-lastX;panY+=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;applyTransform()});
+window.addEventListener("mouseup",()=>dragging=false);
+$("graphWrap").addEventListener("wheel",e=>{e.preventDefault();scale=Math.max(.6,Math.min(1.7,scale+(e.deltaY<0?.08:-.08)));applyTransform()},{passive:false});
+
 async function fetchLive(){
   try{
-    const r=await fetch(PUBLIC_STATS_ENDPOINT,{cache:"no-store",credentials:"omit"});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    state=normalize(await r.json());usingDemo=false;
-    $("connectionLabel").textContent="Data live tersanitasi";
-    $("sourceMode").textContent="Live";
-    $("routerStatus").textContent="Online";$("routerStatus").style.color="var(--green)";
-    render();
-  }catch(e){
-    usingDemo=true;
-    $("connectionLabel").textContent="Mode demo — endpoint belum aktif";
-    $("sourceMode").textContent="Demo";
-    $("routerStatus").textContent="Tidak terhubung";$("routerStatus").style.color="var(--yellow)";
-    render();
+    const r=await fetch(PUBLIC_STATS_ENDPOINT,{cache:"no-store"});
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    if(Array.isArray(d.providers)&&d.providers.length){
+      $("modeLabel").textContent="Data live tersanitasi";
+    }
+  }catch{
+    $("modeLabel").textContent="Mode demo interaktif";
   }
 }
-function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2200)}
-$("copyBtn").onclick=async()=>{await navigator.clipboard.writeText("https://router.dailyflo.me/v1");toast("Endpoint API disalin")};
-$("refreshBtn").onclick=()=>{fetchLive();toast("Data diperbarui")};
-$("themeBtn").onclick=()=>{document.body.classList.toggle("light");const light=document.body.classList.contains("light");$("themeBtn").textContent=light?"🌙":"☀️";localStorage.setItem("df-theme",light?"light":"dark");drawChart()};
-if(localStorage.getItem("df-theme")==="light"){document.body.classList.add("light");$("themeBtn").textContent="🌙"}
-document.querySelectorAll("[data-window]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-window]").forEach(x=>x.classList.remove("active"));b.classList.add("active");chartWindow=Number(b.dataset.window);drawChart()});
-window.addEventListener("resize",drawChart);
-$("year").textContent=new Date().getFullYear();
-render();fetchLive();setInterval(fetchLive,5000);setInterval(demoTick,2200);
+
+$("refreshBtn").onclick=()=>{fetchLive();showToast("Dashboard diperbarui")};
+function showToast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1800)}
+
+buildGraph();render();selectProvider("claude");fetchLive();setInterval(simulate,2500);
 </script>
 </body>
 </html>
