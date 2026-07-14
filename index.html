@@ -3,19 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="DailyFlow interactive 9Router topology dashboard.">
+<meta name="description" content="DailyFlow fixed topology dashboard untuk 9Router.">
 <meta name="theme-color" content="#07111f">
-<title>DailyFlow · 9Router Control Center</title>
+<title>DailyFlow · Fixed Topology</title>
 <style>
 :root{
-  --bg:#07111f;--bg2:#0d1a2d;--panel:rgba(14,28,49,.78);--panel2:#102039;
-  --text:#f7f9ff;--muted:#95a8c1;--line:rgba(255,255,255,.1);
-  --violet:#8065ff;--cyan:#20c8ff;--green:#38e2a0;--yellow:#ffd166;--red:#ff6d8f;--orange:#ff6b35;
-  --shadow:0 26px 80px rgba(0,0,0,.34);--radius:22px;
+  --bg:#07111f;--panel:rgba(14,28,49,.80);--panel2:#102039;--text:#f7f9ff;--muted:#95a8c1;
+  --line:rgba(255,255,255,.1);--violet:#8065ff;--cyan:#20c8ff;--green:#38e2a0;
+  --yellow:#ffd166;--red:#ff6d8f;--orange:#ff6b35;--shadow:0 26px 80px rgba(0,0,0,.34);
 }
 body.light{
-  --bg:#eef4ff;--bg2:#f8fbff;--panel:rgba(255,255,255,.86);--panel2:#fff;
-  --text:#111827;--muted:#5f7188;--line:rgba(17,24,39,.1);--shadow:0 22px 65px rgba(68,88,130,.2)
+  --bg:#eef4ff;--panel:rgba(255,255,255,.88);--panel2:#fff;--text:#111827;--muted:#5f7188;
+  --line:rgba(17,24,39,.1);--shadow:0 22px 65px rgba(68,88,130,.2)
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -47,7 +46,6 @@ nav{position:sticky;top:0;z-index:50;height:76px;backdrop-filter:blur(18px);back
 main{padding:46px 0 90px}
 .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;margin-bottom:22px}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;border:1px solid rgba(128,101,255,.32);background:rgba(128,101,255,.09);color:#c8bfff;font-weight:750;font-size:.86rem}
-body.light .eyebrow{color:#5a44d6}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(56,226,160,.42);animation:pulse 1.8s infinite}
 @keyframes pulse{70%{box-shadow:0 0 0 10px rgba(56,226,160,0)}}
 h1{font-size:clamp(3rem,6vw,6rem);line-height:.95;letter-spacing:-.075em;margin:16px 0 14px}
@@ -63,22 +61,29 @@ h1{font-size:clamp(3rem,6vw,6rem);line-height:.95;letter-spacing:-.075em;margin:
 .metric{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:18px;backdrop-filter:blur(14px)}
 .metric small{color:var(--muted)}.metric strong{display:block;font-size:2rem;margin-top:6px;letter-spacing:-.04em}
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:15px}
-.card{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);box-shadow:0 14px 44px rgba(0,0,0,.12);backdrop-filter:blur(14px)}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:22px;box-shadow:0 14px 44px rgba(0,0,0,.12);backdrop-filter:blur(14px)}
 .card-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .card-head small{color:var(--muted)}
-.graph-wrap{height:640px;position:relative;overflow:hidden;border-radius:0 0 var(--radius) var(--radius);background:
-linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
-linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
-rgba(3,9,18,.42);background-size:48px 48px;cursor:grab}
-.graph-wrap:active{cursor:grabbing}
-.stage{position:absolute;inset:0;transform-origin:0 0}
+.graph-wrap{
+  height:640px;position:relative;overflow:hidden;border-radius:0 0 22px 22px;
+  background:
+    linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+    rgba(3,9,18,.42);
+  background-size:48px 48px;
+}
+.stage{position:absolute;inset:0}
 svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .route{fill:none;stroke:rgba(255,255,255,.1);stroke-width:2}
 .route.active{stroke:var(--green);stroke-dasharray:8 8;animation:dash 1s linear infinite;filter:drop-shadow(0 0 5px rgba(56,226,160,.65))}
 .route.slow{stroke:var(--yellow);stroke-dasharray:7 9;animation:dash 1.5s linear infinite}
 .route.offline{stroke:var(--red)}
 @keyframes dash{to{stroke-dashoffset:-16}}
-.node{position:absolute;min-width:170px;padding:13px 15px;border-radius:13px;border:1px solid rgba(255,255,255,.14);background:rgba(17,31,52,.96);display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.28);cursor:pointer;user-select:none;transition:.2s ease}
+.node{
+  position:absolute;min-width:170px;padding:13px 15px;border-radius:13px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(17,31,52,.96);display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.28);
+  cursor:pointer;user-select:none;transition:.2s ease
+}
 body.light .node{background:#fff}
 .node:hover{transform:translateY(-3px);border-color:rgba(128,101,255,.55)}
 .node.center{border-color:var(--orange);box-shadow:0 0 0 1px rgba(255,107,53,.35),0 18px 45px rgba(0,0,0,.35)}
@@ -90,9 +95,6 @@ body.light .node{background:#fff}
 .node-copy strong{display:block}.node-copy small{color:var(--muted)}
 .node-state{margin-left:auto;width:9px;height:9px;border-radius:50%;background:#596579}
 .node.active .node-state{background:var(--green)}.node.slow .node-state{background:var(--yellow)}.node.offline .node-state{background:var(--red)}
-.zoom{position:absolute;left:18px;bottom:18px;display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2)}
-.zoom button{width:38px;height:38px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer;font-size:1.15rem}
-.zoom button:last-child{border-bottom:0}
 .side{display:grid;gap:15px;align-content:start}
 .side-body{padding:15px}
 .detail h3{margin:0 0 3px}.detail p{margin:0;color:var(--muted)}
@@ -108,16 +110,25 @@ body.light .node{background:#fff}
 .notice{margin-top:15px;padding:13px;border-radius:14px;border:1px solid rgba(255,209,102,.28);background:rgba(255,209,102,.07);color:var(--muted);font-size:.82rem}
 .toast{position:fixed;right:20px;bottom:20px;padding:13px 16px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);box-shadow:var(--shadow);transform:translateY(110px);opacity:0;transition:.3s;z-index:100}
 .toast.show{transform:none;opacity:1}
-@media(max-width:1000px){.hero,.workspace{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.graph-wrap{height:590px}}
-@media(max-width:560px){main{padding-top:28px}.metrics{grid-template-columns:1fr}.overview-grid{grid-template-columns:1fr}.nav-actions .desktop{display:none}.container{width:min(100% - 20px,1220px)}.graph-wrap{height:540px}.node{min-width:145px;padding:11px}.hero-actions .btn{width:100%;justify-content:center}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media(max-width:1000px){
+  .hero,.workspace{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.graph-wrap{height:590px}
+}
+@media(max-width:720px){
+  .graph-wrap{height:760px}
+  .node{min-width:145px}
+}
+@media(max-width:560px){
+  main{padding-top:28px}.metrics{grid-template-columns:1fr}.overview-grid{grid-template-columns:1fr}
+  .nav-actions .desktop{display:none}.container{width:min(100% - 20px,1220px)}
+  .hero-actions .btn{width:100%;justify-content:center}
+}
 </style>
 </head>
 <body>
 <div class="grid-overlay"></div>
 <nav>
   <div class="container nav-inner">
-    <a class="brand" href="#"><span class="logo">9</span><span>DailyFlow</span></a>
+    <a class="brand" href="#"><span class="logo">D</span><span>DailyFlow</span></a>
     <div class="nav-actions">
       <button class="icon-btn" id="themeBtn" title="Ganti tema">☀️</button>
       <button class="btn desktop" id="refreshBtn">↻ Refresh</button>
@@ -131,7 +142,7 @@ body.light .node{background:#fff}
     <div>
       <div class="eyebrow"><span class="dot"></span><span id="modeLabel">Menghubungkan statistik...</span></div>
       <h1>Alur AI yang <span class="gradient">terlihat hidup.</span></h1>
-      <p>Tampilan lama DailyFlow tetap dipertahankan, kini dilengkapi peta routing interaktif dengan 9Router sebagai node pusat dan provider mengelilinginya.</p>
+      <p>DailyFlow menjadi pusat visualisasi, sementara provider dan model mengikuti data yang dikirim oleh 9Router melalui endpoint statistik aman.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">Akses 9Router</a>
         <button class="btn" id="copyBtn">Salin endpoint API</button>
@@ -159,7 +170,7 @@ body.light .node{background:#fff}
   <section class="workspace">
     <div class="card">
       <div class="card-head">
-        <div><strong>9Router provider topology</strong><br><small>Zoom, geser, dan klik node untuk detail</small></div>
+        <div><strong>DailyFlow provider topology</strong><br><small>Topology fixed, tanpa drag dan tanpa zoom</small></div>
         <div class="legend">
           <span><i style="background:var(--green)"></i>Aktif</span>
           <span><i style="background:var(--yellow)"></i>Lambat</span>
@@ -167,9 +178,8 @@ body.light .node{background:#fff}
           <span><i style="background:#596579"></i>Idle</span>
         </div>
       </div>
-      <div class="graph-wrap" id="graphWrap">
+      <div class="graph-wrap">
         <div class="stage" id="stage"><svg id="routes"></svg></div>
-        <div class="zoom"><button id="zoomIn">+</button><button id="zoomOut">−</button><button id="resetZoom">⛶</button></div>
       </div>
     </div>
 
@@ -178,7 +188,7 @@ body.light .node{background:#fff}
         <div class="card-head"><strong>Detail provider</strong><small id="providerStatus">Idle</small></div>
         <div class="side-body detail">
           <h3 id="providerName">Pilih provider</h3>
-          <p id="providerModel">Klik node untuk melihat detail.</p>
+          <p id="providerModel">Klik node untuk melihat model aktual dari 9Router.</p>
           <div class="stat-grid">
             <div class="stat"><small>Token</small><strong id="providerTokens">0</strong></div>
             <div class="stat"><small>Request</small><strong id="providerRequests">0</strong></div>
@@ -205,83 +215,258 @@ const $=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat("id-ID",{notation:Number(n)>999999?"compact":"standard",maximumFractionDigits:1}).format(Math.round(Number(n)||0));
 const safePattern=/(api.?key|access.?token|refresh.?token|authorization|secret|password|credential|cookie|prompt|message|content)/i;
 
-const defs=[
-{id:"claude",name:"Claude",icon:"C",x:130,y:120},
-{id:"gemini",name:"Gemini",icon:"G",x:420,y:50},
-{id:"openai",name:"OpenAI",icon:"O",x:760,y:120},
-{id:"deepseek",name:"DeepSeek",icon:"D",x:790,y:420},
-{id:"mistral",name:"Mistral",icon:"M",x:430,y:510},
-{id:"qwen",name:"Qwen",icon:"Q",x:110,y:420},
-{id:"router",name:"9Router",icon:"9",x:450,y:285,center:true}
+const desktopSlots=[
+  {x:120,y:115},{x:420,y:45},{x:760,y:115},
+  {x:780,y:430},{x:430,y:520},{x:100,y:430}
+];
+const mobileSlots=[
+  {x:20,y:70},{x:200,y:70},{x:20,y:250},
+  {x:200,y:250},{x:20,y:610},{x:200,y:610}
 ];
 
-let scale=1,panX=0,panY=0,dragging=false,lastX=0,lastY=0,usingDemo=false;
+let usingDemo=false;
 let state={
-totalTokens:1482300,requests:4821,updatedAt:new Date().toISOString(),
-providers:[
-{id:"claude",name:"Claude",model:"Sonnet",tokens:520000,requests:1520,latency:420,errors:1.2,status:"active"},
-{id:"gemini",name:"Gemini",model:"Flash",tokens:386000,requests:1280,latency:310,errors:.8,status:"idle"},
-{id:"openai",name:"OpenAI",model:"GPT",tokens:342000,requests:980,latency:560,errors:2.1,status:"idle"},
-{id:"deepseek",name:"DeepSeek",model:"Chat",tokens:112000,requests:530,latency:810,errors:4.5,status:"slow"},
-{id:"mistral",name:"Mistral",model:"Large",tokens:78000,requests:310,latency:470,errors:1.8,status:"idle"},
-{id:"qwen",name:"Qwen",model:"Coder",tokens:44300,requests:201,latency:390,errors:1.1,status:"offline"}],
-recent:[]
+  totalTokens:1482300,requests:4821,updatedAt:new Date().toISOString(),
+  providers:[
+    {id:"claude",name:"Claude",model:"Sonnet",tokens:520000,requests:1520,latency:420,errors:1.2,status:"active"},
+    {id:"gemini",name:"Gemini",model:"Flash",tokens:386000,requests:1280,latency:310,errors:.8,status:"idle"},
+    {id:"openai",name:"OpenAI",model:"GPT",tokens:342000,requests:980,latency:560,errors:2.1,status:"idle"},
+    {id:"deepseek",name:"DeepSeek",model:"Chat",tokens:112000,requests:530,latency:810,errors:4.5,status:"slow"},
+    {id:"mistral",name:"Mistral",model:"Large",tokens:78000,requests:310,latency:470,errors:1.8,status:"idle"},
+    {id:"qwen",name:"Qwen",model:"Coder",tokens:44300,requests:201,latency:390,errors:1.1,status:"offline"}
+  ],
+  recent:[]
 };
 
 function sanitize(value,depth=0){
- if(depth>6)return null;
- if(Array.isArray(value))return value.map(v=>sanitize(v,depth+1)).filter(v=>v!==null);
- if(value&&typeof value==="object"){const out={};for(const[k,v]of Object.entries(value)){if(safePattern.test(k))continue;out[k]=sanitize(v,depth+1)}return out}
- return value;
+  if(depth>6)return null;
+  if(Array.isArray(value))return value.map(v=>sanitize(v,depth+1)).filter(v=>v!==null);
+  if(value&&typeof value==="object"){
+    const out={};
+    for(const[k,v]of Object.entries(value)){
+      if(safePattern.test(k))continue;
+      out[k]=sanitize(v,depth+1);
+    }
+    return out;
+  }
+  return value;
 }
-function slug(s){return String(s||"provider").toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,18)}
-function nodeHtml(d){return `<div class="node ${d.center?"center":""}" id="node-${d.id}" data-id="${d.id}" style="left:${d.x}px;top:${d.y}px"><div class="node-icon">${d.icon}</div><div class="node-copy"><strong>${d.name}</strong><small id="model-${d.id}">${d.center?"Routing core":"Model"}</small></div><span class="node-state"></span></div>`}
+function slug(s){return String(s||"provider").toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,18)||"provider"}
+function iconFromName(name){return String(name||"?").trim().charAt(0).toUpperCase()||"?"}
+
+function centerSlot(){
+  return window.innerWidth<=720 ? {x:110,y:425} : {x:450,y:285};
+}
+function slots(){
+  return window.innerWidth<=720 ? mobileSlots : desktopSlots;
+}
+function nodeHtml(p,i){
+  const slot=slots()[i]||slots()[slots().length-1];
+  return `<div class="node" id="node-${p.id}" data-id="${p.id}" style="left:${slot.x}px;top:${slot.y}px">
+    <div class="node-icon">${iconFromName(p.name)}</div>
+    <div class="node-copy"><strong>${p.name}</strong><small>${p.model||"Model"}</small></div>
+    <span class="node-state"></span>
+  </div>`;
+}
+function centerHtml(){
+  const c=centerSlot();
+  return `<div class="node center" id="node-dailyflow" data-id="dailyflow" style="left:${c.x}px;top:${c.y}px">
+    <div class="node-icon">D</div>
+    <div class="node-copy"><strong>DailyFlow</strong><small>Routing visualization</small></div>
+    <span class="node-state"></span>
+  </div>`;
+}
 function build(){
- const stage=$("stage");stage.querySelectorAll(".node").forEach(n=>n.remove());defs.forEach(d=>stage.insertAdjacentHTML("beforeend",nodeHtml(d)));
- stage.querySelectorAll(".node").forEach(n=>n.onclick=()=>selectProvider(n.dataset.id));drawRoutes();
+  const stage=$("stage");
+  stage.querySelectorAll(".node").forEach(n=>n.remove());
+  stage.insertAdjacentHTML("beforeend",centerHtml());
+  state.providers.slice(0,6).forEach((p,i)=>stage.insertAdjacentHTML("beforeend",nodeHtml(p,i)));
+  stage.querySelectorAll(".node").forEach(n=>n.onclick=()=>selectProvider(n.dataset.id));
+  drawRoutes();
 }
 function drawRoutes(){
- const svg=$("routes");svg.innerHTML="";const c=defs.find(x=>x.id==="router");
- state.providers.forEach(p=>{const d=defs.find(x=>x.id===p.id);if(!d)return;const x1=c.x+85,y1=c.y+28,x2=d.x+85,y2=d.y+28,cx=(x1+x2)/2;
- const path=document.createElementNS("http://www.w3.org/2000/svg","path");path.setAttribute("d",`M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`);path.setAttribute("class","route "+p.status);svg.appendChild(path)});
+  const svg=$("routes");svg.innerHTML="";
+  const c=centerSlot(),x1=c.x+85,y1=c.y+28;
+  state.providers.slice(0,6).forEach((p,i)=>{
+    const s=slots()[i];if(!s)return;
+    const x2=s.x+85,y2=s.y+28,cx=(x1+x2)/2;
+    const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("d",`M ${x1} ${y1} C ${cx} ${y1}, ${cx} ${y2}, ${x2} ${y2}`);
+    path.setAttribute("class","route "+p.status);
+    svg.appendChild(path);
+  });
 }
 function render(){
- $("totalTokens").textContent=fmt(state.totalTokens);$("requests").textContent=fmt(state.requests);
- const avg=state.providers.reduce((a,b)=>a+(Number(b.latency)||0),0)/Math.max(1,state.providers.length);$("latency").textContent=Math.round(avg)+" ms";
- $("activeProviders").textContent=state.providers.filter(x=>x.status==="active").length;
- $("updatedAt").textContent=new Date(state.updatedAt||Date.now()).toLocaleTimeString("id-ID");
- state.providers.forEach(p=>{const n=$("node-"+p.id);if(!n)return;n.classList.remove("active","slow","offline");if(["active","slow","offline"].includes(p.status))n.classList.add(p.status);$("model-"+p.id).textContent=p.model||"Model"});
- $("activity").innerHTML=(state.recent.length?state.recent:[{provider:"Belum ada aktivitas",model:"-",tokens:0,latency:0,time:"-"}]).map(x=>`<div class="event"><span class="event-dot"></span><div><p><strong>${x.provider}</strong> · ${x.model}</p><small>${fmt(x.tokens)} token · ${x.latency} ms</small></div><small>${x.time}</small></div>`).join("");
- drawRoutes();
+  $("totalTokens").textContent=fmt(state.totalTokens);
+  $("requests").textContent=fmt(state.requests);
+  const avg=state.providers.reduce((a,b)=>a+(Number(b.latency)||0),0)/Math.max(1,state.providers.length);
+  $("latency").textContent=Math.round(avg)+" ms";
+  $("activeProviders").textContent=state.providers.filter(x=>x.status==="active").length;
+  $("updatedAt").textContent=new Date(state.updatedAt||Date.now()).toLocaleTimeString("id-ID");
+  state.providers.slice(0,6).forEach(p=>{
+    const n=$("node-"+p.id);if(!n)return;
+    n.classList.remove("active","slow","offline");
+    if(["active","slow","offline"].includes(p.status))n.classList.add(p.status);
+  });
+  $("activity").innerHTML=(state.recent.length?state.recent:[{provider:"Belum ada aktivitas",model:"-",tokens:0,latency:0,time:"-"}]).map(x=>`
+    <div class="event"><span class="event-dot"></span><div><p><strong>${x.provider}</strong> · ${x.model}</p>
+    <small>${fmt(x.tokens)} token · ${x.latency} ms</small></div><small>${x.time}</small></div>`).join("");
+  drawRoutes();
 }
 function selectProvider(id){
- document.querySelectorAll(".node").forEach(n=>n.classList.remove("selected"));const node=$("node-"+id);if(node)node.classList.add("selected");
- if(id==="router"){ $("providerName").textContent="9Router";$("providerModel").textContent="Routing core";$("providerTokens").textContent=fmt(state.totalTokens);$("providerRequests").textContent=fmt(state.requests);$("providerLatency").textContent=$("latency").textContent;$("providerErrors").textContent="-";$("providerStatus").textContent="core";return}
- const p=state.providers.find(x=>x.id===id);if(!p)return;$("providerName").textContent=p.name;$("providerModel").textContent=p.model;$("providerTokens").textContent=fmt(p.tokens);$("providerRequests").textContent=fmt(p.requests);$("providerLatency").textContent=p.latency+" ms";$("providerErrors").textContent=p.errors+"%";$("providerStatus").textContent=p.status;
+  document.querySelectorAll(".node").forEach(n=>n.classList.remove("selected"));
+  const node=$("node-"+id);if(node)node.classList.add("selected");
+  if(id==="dailyflow"){
+    $("providerName").textContent="DailyFlow";
+    $("providerModel").textContent="Pusat visualisasi routing";
+    $("providerTokens").textContent=fmt(state.totalTokens);
+    $("providerRequests").textContent=fmt(state.requests);
+    $("providerLatency").textContent=$("latency").textContent;
+    $("providerErrors").textContent="-";
+    $("providerStatus").textContent="core";
+    return;
+  }
+  const p=state.providers.find(x=>x.id===id);if(!p)return;
+  $("providerName").textContent=p.name;
+  $("providerModel").textContent=p.model||"Model tidak tersedia";
+  $("providerTokens").textContent=fmt(p.tokens);
+  $("providerRequests").textContent=fmt(p.requests);
+  $("providerLatency").textContent=p.latency+" ms";
+  $("providerErrors").textContent=p.errors+"%";
+  $("providerStatus").textContent=p.status;
 }
 function simulate(){
- if(!usingDemo)return;state.providers.forEach(x=>{if(x.status==="active")x.status="idle"});const p=state.providers[Math.floor(Math.random()*state.providers.length)];
- p.status=Math.random()<.1?"slow":"active";const add=Math.round(800+Math.random()*5200);p.tokens+=add;p.requests+=1;p.latency=Math.round(250+Math.random()*750);state.totalTokens+=add;state.requests+=1;state.updatedAt=new Date().toISOString();
- state.recent.unshift({provider:p.name,model:p.model,tokens:add,latency:p.latency,time:new Date().toLocaleTimeString("id-ID")});if(state.recent.length>10)state.recent.pop();render();selectProvider(p.id);
+  if(!usingDemo)return;
+  state.providers.forEach(x=>{if(x.status==="active")x.status="idle"});
+  const p=state.providers[Math.floor(Math.random()*state.providers.length)];
+  p.status=Math.random()<.1?"slow":"active";
+  const add=Math.round(800+Math.random()*5200);
+  p.tokens+=add;p.requests+=1;p.latency=Math.round(250+Math.random()*750);
+  state.totalTokens+=add;state.requests+=1;state.updatedAt=new Date().toISOString();
+  state.recent.unshift({provider:p.name,model:p.model,tokens:add,latency:p.latency,time:new Date().toLocaleTimeString("id-ID")});
+  if(state.recent.length>10)state.recent.pop();
+  render();selectProvider(p.id);
 }
-function mapLive(d){
- const clean=sanitize(d);if(!clean||typeof clean!=="object")throw new Error("bad data");
- const providerList=Array.isArray(clean.providers)?clean.providers:[];const recent=Array.isArray(clean.recent)?clean.recent:[];
- const merged=providerList.slice(0,6).map((p,i)=>{const id=defs[i]?.id||slug(p.name);return{id,name:String(p.name||"Provider"),model:String(p.model||"Model"),tokens:Number(p.tokens||p.totalTokens||0),requests:Number(p.requests||0),latency:Number(p.latency||p.latencyMs||0),errors:Number(p.errors||p.errorRate||0),status:String(p.status||"idle")}});
- if(merged.length)state.providers=merged;state.totalTokens=Number(clean.totalTokens||0);state.requests=Number(clean.requests||0);state.updatedAt=clean.updatedAt||new Date().toISOString();state.recent=recent.slice(0,10).map(x=>({provider:String(x.provider||"Provider"),model:String(x.model||"Model"),tokens:Number(x.total||x.tokens||0),latency:Number(x.latencyMs||0),time:new Date(x.time||Date.now()).toLocaleTimeString("id-ID")}));
+function mapLive(raw){
+  const clean=sanitize(raw);
+  if(!clean||typeof clean!=="object")throw new Error("bad data");
+
+  const providerStats=Array.isArray(clean.providers)?clean.providers:[];
+  const modelStats=Array.isArray(clean.models)?clean.models:[];
+  const recent=Array.isArray(clean.recent)?clean.recent:[];
+
+  const byProvider=new Map();
+
+  for(const item of providerStats){
+    const name=String(item.name||item.provider||"Provider");
+    byProvider.set(name.toLowerCase(),{
+      id:slug(name),
+      name,
+      model:"",
+      tokens:Number(item.tokens||item.totalTokens||0),
+      requests:Number(item.requests||item.count||0),
+      latency:Number(item.latency||item.latencyMs||0),
+      errors:Number(item.errors||item.errorRate||0),
+      status:String(item.status||"idle")
+    });
+  }
+
+  for(const model of modelStats){
+    const modelName=String(model.name||model.model||"Model");
+    const providerName=String(model.provider||model.providerName||"").toLowerCase();
+    let target=null;
+
+    if(providerName && byProvider.has(providerName)){
+      target=byProvider.get(providerName);
+    }else{
+      target=[...byProvider.values()].find(p=>modelName.toLowerCase().includes(p.name.toLowerCase()));
+    }
+
+    if(target && !target.model){
+      target.model=modelName;
+      target.requests=Math.max(target.requests,Number(model.requests||model.count||0));
+      target.tokens=Math.max(target.tokens,Number(model.tokens||model.totalTokens||0));
+    }
+  }
+
+  for(const r of recent){
+    const providerName=String(r.provider||"Provider");
+    const key=providerName.toLowerCase();
+    if(!byProvider.has(key)){
+      byProvider.set(key,{
+        id:slug(providerName),
+        name:providerName,
+        model:String(r.model||"Model"),
+        tokens:Number(r.total||r.tokens||0),
+        requests:1,
+        latency:Number(r.latencyMs||0),
+        errors:Number(r.status)>=400?100:0,
+        status:Number(r.status)>=500?"offline":Number(r.latencyMs)>1200?"slow":"active"
+      });
+    }else{
+      const target=byProvider.get(key);
+      if(r.model)target.model=String(r.model);
+      if(r.latencyMs)target.latency=Number(r.latencyMs);
+      if(Number(r.status)>=500)target.status="offline";
+      else if(Number(r.latencyMs)>1200)target.status="slow";
+      else target.status="active";
+    }
+  }
+
+  const merged=[...byProvider.values()].slice(0,6);
+  if(merged.length){
+    state.providers=merged.map(p=>({...p,model:p.model||"Model dari 9Router"}));
+  }
+
+  state.totalTokens=Number(clean.totalTokens||0);
+  state.requests=Number(clean.requests||0);
+  state.updatedAt=clean.updatedAt||new Date().toISOString();
+  state.recent=recent.slice(0,10).map(x=>({
+    provider:String(x.provider||"Provider"),
+    model:String(x.model||"Model"),
+    tokens:Number(x.total||x.tokens||0),
+    latency:Number(x.latencyMs||0),
+    time:new Date(x.time||Date.now()).toLocaleTimeString("id-ID")
+  }));
 }
 async function fetchLive(){
- try{const r=await fetch(PUBLIC_STATS_ENDPOINT,{cache:"no-store",credentials:"omit"});if(!r.ok)throw new Error("HTTP "+r.status);mapLive(await r.json());usingDemo=false;$("modeLabel").textContent="Data live tersanitasi";$("sourceMode").textContent="Live";$("routerStatus").textContent="Online";$("routerStatus").style.color="var(--green)";render()}
- catch(e){usingDemo=true;$("modeLabel").textContent="Mode demo otomatis";$("sourceMode").textContent="Demo";$("routerStatus").textContent="Tidak terhubung";$("routerStatus").style.color="var(--yellow)";render()}
+  try{
+    const r=await fetch(PUBLIC_STATS_ENDPOINT,{cache:"no-store",credentials:"omit"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    mapLive(await r.json());
+    usingDemo=false;
+    $("modeLabel").textContent="Data live tersanitasi";
+    $("sourceMode").textContent="Live";
+    $("routerStatus").textContent="Online";
+    $("routerStatus").style.color="var(--green)";
+    build();render();selectProvider("dailyflow");
+  }catch{
+    usingDemo=true;
+    $("modeLabel").textContent="Mode demo otomatis";
+    $("sourceMode").textContent="Demo";
+    $("routerStatus").textContent="Tidak terhubung";
+    $("routerStatus").style.color="var(--yellow)";
+    build();render();selectProvider("dailyflow");
+  }
 }
-function applyTransform(){$("stage").style.transform=`translate(${panX}px,${panY}px) scale(${scale})`}
-$("zoomIn").onclick=()=>{scale=Math.min(1.75,scale+.1);applyTransform()};$("zoomOut").onclick=()=>{scale=Math.max(.6,scale-.1);applyTransform()};$("resetZoom").onclick=()=>{scale=1;panX=0;panY=0;applyTransform()};
-$("graphWrap").addEventListener("mousedown",e=>{if(e.target.closest(".node"))return;dragging=true;lastX=e.clientX;lastY=e.clientY});window.addEventListener("mousemove",e=>{if(!dragging)return;panX+=e.clientX-lastX;panY+=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;applyTransform()});window.addEventListener("mouseup",()=>dragging=false);
-$("graphWrap").addEventListener("wheel",e=>{e.preventDefault();scale=Math.max(.6,Math.min(1.75,scale+(e.deltaY<0?.08:-.08)));applyTransform()},{passive:false});
-$("themeBtn").onclick=()=>{document.body.classList.toggle("light");const l=document.body.classList.contains("light");$("themeBtn").textContent=l?"🌙":"☀️";localStorage.setItem("df-theme",l?"light":"dark")};if(localStorage.getItem("df-theme")==="light"){document.body.classList.add("light");$("themeBtn").textContent="🌙"}
-$("copyBtn").onclick=async()=>{await navigator.clipboard.writeText("https://router.dailyflo.me/v1");showToast("Endpoint API disalin")};$("refreshBtn").onclick=()=>{fetchLive();showToast("Dashboard diperbarui")};
+$("themeBtn").onclick=()=>{
+  document.body.classList.toggle("light");
+  const l=document.body.classList.contains("light");
+  $("themeBtn").textContent=l?"🌙":"☀️";
+  localStorage.setItem("df-theme",l?"light":"dark");
+};
+if(localStorage.getItem("df-theme")==="light"){
+  document.body.classList.add("light");
+  $("themeBtn").textContent="🌙";
+}
+$("copyBtn").onclick=async()=>{await navigator.clipboard.writeText("https://router.dailyflo.me/v1");showToast("Endpoint API disalin")};
+$("refreshBtn").onclick=()=>{fetchLive();showToast("Dashboard diperbarui")};
 function showToast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1900)}
-build();render();selectProvider("router");fetchLive();setInterval(fetchLive,5000);setInterval(simulate,2400);
+window.addEventListener("resize",()=>{build();render();selectProvider("dailyflow")});
+
+build();render();selectProvider("dailyflow");fetchLive();
+setInterval(fetchLive,5000);
+setInterval(simulate,2400);
 </script>
 </body>
 </html>
