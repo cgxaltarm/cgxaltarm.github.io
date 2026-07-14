@@ -1,1113 +1,305 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="DailyFlow — pusat workflow AI, produktivitas, dan akses aman ke 9Router." />
-  <meta name="theme-color" content="#0b1020" />
-  <title>DailyFlow</title>
-
-  <style>
-    :root {
-      --bg: #07111f;
-      --bg-soft: #0c1728;
-      --panel: rgba(16, 28, 48, 0.72);
-      --panel-solid: #111d31;
-      --text: #f6f8ff;
-      --muted: #9fb0c7;
-      --primary: #7c5cff;
-      --primary-2: #17c8ff;
-      --accent: #32e6a1;
-      --danger: #ff6b8a;
-      --border: rgba(255,255,255,.10);
-      --shadow: 0 24px 70px rgba(0,0,0,.35);
-      --radius: 22px;
-      --nav-h: 76px;
-    }
-
-    body.light {
-      --bg: #eef4ff;
-      --bg-soft: #f8fbff;
-      --panel: rgba(255, 255, 255, 0.78);
-      --panel-solid: #ffffff;
-      --text: #101725;
-      --muted: #5d6b80;
-      --border: rgba(16,23,37,.10);
-      --shadow: 0 24px 70px rgba(65,89,135,.18);
-    }
-
-    * { box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: calc(var(--nav-h) + 18px);
-    }
-
-    body {
-      margin: 0;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 20% 10%, rgba(124,92,255,.20), transparent 34%),
-        radial-gradient(circle at 85% 18%, rgba(23,200,255,.16), transparent 30%),
-        radial-gradient(circle at 50% 100%, rgba(50,230,161,.10), transparent 35%),
-        var(--bg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-      transition: background .25s ease, color .25s ease;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    button, input { font: inherit; }
-
-    .noise {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .045;
-      z-index: 100;
-      background-image:
-        linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px);
-      background-size: 26px 26px;
-      mask-image: radial-gradient(circle at center, black, transparent 80%);
-    }
-
-    .orb {
-      position: fixed;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      filter: blur(58px);
-      opacity: .18;
-      pointer-events: none;
-      z-index: -1;
-      transition: transform .3s ease-out;
-    }
-
-    .orb.one { background: var(--primary); top: 12%; left: -90px; }
-    .orb.two { background: var(--primary-2); top: 42%; right: -100px; }
-    .orb.three { background: var(--accent); bottom: -100px; left: 35%; }
-
-    .container {
-      width: min(1160px, calc(100% - 36px));
-      margin-inline: auto;
-    }
-
-    nav {
-      position: sticky;
-      top: 0;
-      height: var(--nav-h);
-      z-index: 50;
-      backdrop-filter: blur(18px);
-      background: color-mix(in srgb, var(--bg) 70%, transparent);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-inner {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      letter-spacing: -.03em;
-      font-size: 1.15rem;
-    }
-
-    .logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 13px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      box-shadow: 0 10px 30px rgba(79, 102, 255, .28);
-    }
-
-    .logo svg { width: 23px; height: 23px; }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      padding: 9px 12px;
-      border-radius: 10px;
-      font-size: .95rem;
-      transition: .2s ease;
-    }
-
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--text);
-      background: rgba(255,255,255,.07);
-    }
-
-    .nav-actions { display: flex; align-items: center; gap: 10px; }
-
-    .icon-btn, .menu-btn {
-      border: 1px solid var(--border);
-      color: var(--text);
-      background: var(--panel);
-      width: 42px;
-      height: 42px;
-      border-radius: 13px;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      transition: .2s ease;
-    }
-
-    .icon-btn:hover, .menu-btn:hover {
-      transform: translateY(-2px);
-      border-color: rgba(124,92,255,.5);
-    }
-
-    .menu-btn { display: none; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      border: 0;
-      border-radius: 14px;
-      padding: 13px 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .22s ease;
-    }
-
-    .btn:hover { transform: translateY(-2px); }
-
-    .btn-primary {
-      color: #fff;
-      background: linear-gradient(135deg, var(--primary), #5a7cff 58%, var(--primary-2));
-      box-shadow: 0 14px 34px rgba(86,92,255,.28);
-    }
-
-    .btn-secondary {
-      color: var(--text);
-      background: var(--panel);
-      border: 1px solid var(--border);
-    }
-
-    .hero {
-      min-height: calc(100vh - var(--nav-h));
-      display: grid;
-      align-items: center;
-      padding: 72px 0 62px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.08fr .92fr;
-      gap: 54px;
-      align-items: center;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 8px 12px;
-      border: 1px solid rgba(124,92,255,.34);
-      border-radius: 999px;
-      background: rgba(124,92,255,.08);
-      color: #c7bcff;
-      font-weight: 700;
-      font-size: .88rem;
-      margin-bottom: 20px;
-    }
-
-    body.light .eyebrow { color: #5a43d7; }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 0 rgba(50,230,161,.45);
-      animation: pulse 1.8s infinite;
-    }
-
-    @keyframes pulse {
-      70% { box-shadow: 0 0 0 10px rgba(50,230,161,0); }
-      100% { box-shadow: 0 0 0 0 rgba(50,230,161,0); }
-    }
-
-    h1 {
-      font-size: clamp(3.3rem, 7vw, 6.4rem);
-      line-height: .94;
-      margin: 0;
-      letter-spacing: -.075em;
-      max-width: 760px;
-    }
-
-    .gradient-text {
-      background: linear-gradient(100deg, #fff, #a995ff 42%, #64dfff 76%, #50efb3);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    body.light .gradient-text {
-      background: linear-gradient(100deg, #151b2b, #694cff 45%, #008ec4 78%, #0d9d6c);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      max-width: 680px;
-      margin: 24px 0 28px;
-      color: var(--muted);
-      font-size: 1.08rem;
-    }
-
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    .mini-stats {
-      display: flex;
-      gap: 24px;
-      margin-top: 34px;
-      flex-wrap: wrap;
-    }
-
-    .mini-stat strong { display: block; font-size: 1.22rem; }
-    .mini-stat span { color: var(--muted); font-size: .86rem; }
-
-    .terminal-card {
-      position: relative;
-      background: linear-gradient(180deg, rgba(20,33,56,.92), rgba(7,16,30,.92));
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      box-shadow: var(--shadow);
-      padding: 18px;
-      overflow: hidden;
-      transform: perspective(1200px) rotateY(-5deg) rotateX(2deg);
-      transition: transform .25s ease;
-    }
-
-    body.light .terminal-card {
-      background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(239,245,255,.94));
-    }
-
-    .terminal-card:hover { transform: perspective(1200px) rotateY(0) rotateX(0) translateY(-4px); }
-
-    .terminal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .dots { display: flex; gap: 7px; }
-    .dots span { width: 11px; height: 11px; border-radius: 50%; }
-    .dots span:nth-child(1) { background: #ff6b6b; }
-    .dots span:nth-child(2) { background: #ffd166; }
-    .dots span:nth-child(3) { background: #38d996; }
-
-    .terminal-label { color: var(--muted); font-size: .84rem; }
-
-    .terminal-body {
-      border-radius: 18px;
-      padding: 20px;
-      background: rgba(3,9,18,.62);
-      border: 1px solid rgba(255,255,255,.06);
-      min-height: 320px;
-    }
-
-    body.light .terminal-body { background: #f3f7ff; }
-
-    .code-line {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 14px;
-      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-      font-size: .9rem;
-    }
-
-    .code-line .n { color: #53657c; min-width: 18px; user-select: none; }
-    .code-line .cmd { color: #a8b9cf; }
-    .code-line .ok { color: var(--accent); }
-    .code-line .cyan { color: var(--primary-2); }
-    .code-line .violet { color: #ae9bff; }
-
-    .status-panel {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .status-box {
-      padding: 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.035);
-    }
-
-    .status-box small { color: var(--muted); display: block; }
-    .status-box strong { font-size: .92rem; }
-
-    section { padding: 94px 0; }
-
-    .section-head {
-      text-align: center;
-      max-width: 760px;
-      margin: 0 auto 42px;
-    }
-
-    .section-head .tag {
-      color: var(--primary-2);
-      font-weight: 800;
-      font-size: .84rem;
-      text-transform: uppercase;
-      letter-spacing: .13em;
-    }
-
-    h2 {
-      font-size: clamp(2.2rem, 4vw, 3.7rem);
-      line-height: 1.05;
-      letter-spacing: -.055em;
-      margin: 10px 0 14px;
-    }
-
-    .section-head p { color: var(--muted); margin: 0; }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .card {
-      position: relative;
-      padding: 24px;
-      min-height: 230px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--panel);
-      backdrop-filter: blur(15px);
-      box-shadow: 0 12px 40px rgba(0,0,0,.12);
-      overflow: hidden;
-      transition: .25s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-7px);
-      border-color: rgba(124,92,255,.48);
-      box-shadow: var(--shadow);
-    }
-
-    .card::after {
-      content: "";
-      position: absolute;
-      inset: auto -40px -60px auto;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(124,92,255,.22), transparent 68%);
-    }
-
-    .feature-icon {
-      width: 50px;
-      height: 50px;
-      display: grid;
-      place-items: center;
-      border-radius: 15px;
-      background: linear-gradient(135deg, rgba(124,92,255,.20), rgba(23,200,255,.14));
-      border: 1px solid rgba(124,92,255,.25);
-      margin-bottom: 18px;
-      font-size: 1.3rem;
-    }
-
-    .card h3 { margin: 0 0 8px; font-size: 1.2rem; }
-    .card p { margin: 0; color: var(--muted); }
-
-    .workflow {
-      display: grid;
-      grid-template-columns: .92fr 1.08fr;
-      gap: 36px;
-      align-items: center;
-    }
-
-    .workflow-copy p { color: var(--muted); }
-
-    .steps { display: grid; gap: 12px; margin-top: 24px; }
-
-    .step {
-      display: grid;
-      grid-template-columns: 44px 1fr;
-      gap: 14px;
-      align-items: center;
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      transition: .2s ease;
-      cursor: pointer;
-    }
-
-    .step:hover, .step.active {
-      transform: translateX(8px);
-      border-color: rgba(23,200,255,.45);
-    }
-
-    .step-num {
-      width: 44px;
-      height: 44px;
-      display: grid;
-      place-items: center;
-      border-radius: 13px;
-      background: rgba(124,92,255,.14);
-      color: #b9aaff;
-      font-weight: 800;
-    }
-
-    .step strong { display: block; }
-    .step span { color: var(--muted); font-size: .9rem; }
-
-    .demo-panel {
-      min-height: 430px;
-      border-radius: 28px;
-      padding: 22px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
-      box-shadow: var(--shadow);
-    }
-
-    .demo-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 22px;
-    }
-
-    .demo-title small { color: var(--muted); display: block; }
-    .online {
-      color: var(--accent);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: .9rem;
-    }
-
-    .flow-board {
-      display: grid;
-      grid-template-columns: 1fr 54px 1fr;
-      align-items: center;
-      gap: 8px;
-      height: 320px;
-    }
-
-    .node {
-      border: 1px solid var(--border);
-      background: var(--panel-solid);
-      border-radius: 20px;
-      padding: 18px;
-      min-height: 145px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: .25s ease;
-    }
-
-    .node.highlight {
-      border-color: rgba(50,230,161,.55);
-      box-shadow: 0 0 0 4px rgba(50,230,161,.08);
-      transform: scale(1.02);
-    }
-
-    .node small { color: var(--muted); }
-    .node strong { font-size: 1.08rem; }
-
-    .node .chip {
-      width: fit-content;
-      font-size: .76rem;
-      border-radius: 999px;
-      padding: 5px 9px;
-      background: rgba(124,92,255,.13);
-      color: #c4baff;
-    }
-
-    .connector {
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      border-radius: 99px;
-      position: relative;
-      overflow: visible;
-    }
-
-    .connector::after {
-      content: "";
-      position: absolute;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: var(--accent);
-      top: 50%;
-      transform: translateY(-50%);
-      animation: travel 2s infinite ease-in-out;
-      box-shadow: 0 0 16px var(--accent);
-    }
-
-    @keyframes travel {
-      0%, 100% { left: 0; }
-      50% { left: calc(100% - 11px); }
-    }
-
-    .cta {
-      padding-bottom: 110px;
-    }
-
-    .cta-box {
-      text-align: center;
-      padding: 58px 26px;
-      border-radius: 30px;
-      border: 1px solid rgba(124,92,255,.30);
-      background:
-        radial-gradient(circle at 10% 10%, rgba(124,92,255,.18), transparent 35%),
-        radial-gradient(circle at 90% 85%, rgba(23,200,255,.16), transparent 35%),
-        var(--panel);
-      box-shadow: var(--shadow);
-    }
-
-    .cta-box p {
-      color: var(--muted);
-      max-width: 620px;
-      margin: 0 auto 24px;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 0 34px;
-      color: var(--muted);
-    }
-
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .toast {
-      position: fixed;
-      right: 22px;
-      bottom: 22px;
-      background: var(--panel-solid);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 15px;
-      box-shadow: var(--shadow);
-      padding: 14px 16px;
-      transform: translateY(120px);
-      opacity: 0;
-      transition: .3s ease;
-      z-index: 80;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(26px);
-      transition: .75s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @media (max-width: 920px) {
-      .hero-grid, .workflow { grid-template-columns: 1fr; }
-      .terminal-card { max-width: 720px; margin: 0 auto; transform: none; }
-      .features-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 720px) {
-      .menu-btn { display: grid; }
-
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: calc(var(--nav-h) - 1px);
-        left: 18px;
-        right: 18px;
-        flex-direction: column;
-        align-items: stretch;
-        background: var(--panel-solid);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 10px;
-        box-shadow: var(--shadow);
-      }
-
-      .nav-links.open { display: flex; }
-      .nav-links a { padding: 12px; }
-      .nav-actions .btn { display: none; }
-
-      .features-grid { grid-template-columns: 1fr; }
-      .flow-board { grid-template-columns: 1fr; height: auto; }
-      .connector { width: 3px; height: 52px; margin: 0 auto; background: linear-gradient(var(--primary), var(--accent)); }
-      .connector::after { left: 50%; top: 0; transform: translateX(-50%); animation: travelY 2s infinite ease-in-out; }
-      @keyframes travelY {
-        0%, 100% { top: 0; }
-        50% { top: calc(100% - 11px); }
-      }
-
-      h1 { font-size: clamp(3.05rem, 16vw, 4.6rem); }
-      section { padding: 76px 0; }
-    }
-
-    @media (max-width: 460px) {
-      .hero-actions .btn { width: 100%; }
-      .status-panel { grid-template-columns: 1fr; }
-      .mini-stats { gap: 16px; }
-      .terminal-body { padding: 16px; }
-      .code-line { font-size: .78rem; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="DailyFlow — dashboard satu halaman untuk status dan usage 9Router.">
+<meta name="theme-color" content="#07111f">
+<title>DailyFlow Dashboard</title>
+<style>
+:root{
+  --bg:#07111f;--bg2:#0b1729;--card:rgba(15,29,49,.82);--solid:#101f35;
+  --text:#f5f8ff;--muted:#94a9c4;--line:rgba(255,255,255,.1);
+  --violet:#8065ff;--cyan:#22c8ff;--green:#39e39f;--yellow:#ffd166;--red:#ff6f91;
+  --shadow:0 24px 70px rgba(0,0,0,.32);--radius:22px;
+}
+body.light{
+  --bg:#edf4ff;--bg2:#f8fbff;--card:rgba(255,255,255,.84);--solid:#fff;
+  --text:#111a2a;--muted:#5f7188;--line:rgba(20,34,55,.1);--shadow:0 20px 60px rgba(62,87,130,.18)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(128,101,255,.18),transparent 30%),
+    radial-gradient(circle at 90% 20%,rgba(34,200,255,.14),transparent 28%),
+    radial-gradient(circle at 50% 100%,rgba(57,227,159,.08),transparent 34%),
+    var(--bg);
+  min-height:100vh;transition:.25s ease
+}
+button,a{font:inherit}a{text-decoration:none;color:inherit}
+.grid-bg{position:fixed;inset:0;pointer-events:none;opacity:.04;background-image:
+  linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px);
+  background-size:28px 28px;mask-image:linear-gradient(to bottom,black,transparent 86%)}
+.container{width:min(1220px,calc(100% - 32px));margin:auto}
+nav{position:sticky;top:0;z-index:50;height:76px;background:color-mix(in srgb,var(--bg) 72%,transparent);
+  backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:850;letter-spacing:-.03em}
+.logo{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--violet),var(--cyan));box-shadow:0 12px 34px rgba(81,92,255,.28)}
+.nav-actions{display:flex;gap:9px;align-items:center}
+.btn,.icon-btn{border:1px solid var(--line);color:var(--text);background:var(--card);cursor:pointer;transition:.2s ease}
+.btn{padding:11px 15px;border-radius:13px;font-weight:750;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:linear-gradient(135deg,var(--violet),#5d86ff 56%,var(--cyan));color:#fff;border:0}
+.btn:hover,.icon-btn:hover{transform:translateY(-2px)}
+.icon-btn{width:42px;height:42px;border-radius:13px}
+main{padding:44px 0 90px}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;margin-bottom:28px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#c6bcff;background:rgba(128,101,255,.09);
+  border:1px solid rgba(128,101,255,.3);padding:7px 11px;border-radius:999px;font-size:.85rem;font-weight:750}
+body.light .eyebrow{color:#5a44d6}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(57,227,159,.4);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(57,227,159,0)}}
+h1{font-size:clamp(2.8rem,6vw,5.8rem);line-height:.96;margin:16px 0 14px;letter-spacing:-.07em}
+.gradient{background:linear-gradient(100deg,var(--text),#a995ff 45%,#52d8ff 78%,#54efb5);
+  background-clip:text;-webkit-background-clip:text;color:transparent}
+.hero p{color:var(--muted);max-width:720px;margin:0 0 22px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.status-panel{border:1px solid var(--line);background:var(--card);border-radius:24px;padding:20px;box-shadow:var(--shadow)}
+.status-title{display:flex;justify-content:space-between;gap:10px;margin-bottom:17px}
+.status-list{display:grid;gap:11px}
+.status-row{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px}
+.status-row small{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:15px}
+.card{border:1px solid var(--line);background:var(--card);backdrop-filter:blur(14px);border-radius:var(--radius);
+  padding:20px;box-shadow:0 12px 38px rgba(0,0,0,.1);position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;right:-42px;bottom:-52px;width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle,rgba(128,101,255,.18),transparent 68%)}
+.label{color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;align-items:center}
+.metric{font-size:clamp(1.7rem,3vw,2.45rem);font-weight:850;letter-spacing:-.045em;margin:8px 0 2px}
+.delta{font-size:.8rem;color:var(--green)}
+.dashboard{display:grid;grid-template-columns:1.45fr .75fr;gap:15px;margin-bottom:15px}
+.chart-card{min-height:430px}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.card-head h2{font-size:1.05rem;margin:0}.card-head small{color:var(--muted)}
+.segmented{display:flex;border:1px solid var(--line);border-radius:11px;padding:3px;background:rgba(0,0,0,.08)}
+.segmented button{border:0;background:transparent;color:var(--muted);padding:7px 10px;border-radius:8px;cursor:pointer}
+.segmented button.active{background:var(--solid);color:var(--text)}
+.canvas-wrap{height:325px;position:relative}canvas{width:100%;height:100%}
+.providers{display:grid;gap:11px}
+.provider{padding:13px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.025)}
+.provider-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:9px}.provider small{color:var(--muted)}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--violet),var(--cyan));transition:width .8s ease}
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.activity{display:grid;gap:8px;max-height:320px;overflow:auto;padding-right:4px}
+.event{display:grid;grid-template-columns:9px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.event-dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
+.event strong{font-size:.88rem}.event p{margin:1px 0 0;color:var(--muted);font-size:.78rem}.event time{color:var(--muted);font-size:.76rem}
+.security{display:grid;gap:12px}
+.safe-item{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:15px;padding:13px}
+.safe-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:11px;background:rgba(57,227,159,.1)}
+.safe-item strong{display:block;font-size:.9rem}.safe-item span{font-size:.8rem;color:var(--muted)}
+.notice{margin-top:15px;padding:13px 15px;border-radius:14px;border:1px solid rgba(255,209,102,.28);
+  background:rgba(255,209,102,.07);color:var(--muted);font-size:.82rem}
+.footer{margin-top:18px;padding:20px 0;color:var(--muted);text-align:center}
+.toast{position:fixed;right:20px;bottom:20px;z-index:80;padding:13px 16px;border-radius:14px;background:var(--solid);
+  border:1px solid var(--line);box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:.3s ease}
+.toast.show{transform:none;opacity:1}
+@media(max-width:980px){.hero,.dashboard,.lower{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.cards{grid-template-columns:1fr}.nav-actions .desktop{display:none}.container{width:min(100% - 20px,1220px)}main{padding-top:26px}.card{padding:16px}.canvas-wrap{height:270px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
-
 <body>
-  <div class="noise"></div>
-  <div class="orb one"></div>
-  <div class="orb two"></div>
-  <div class="orb three"></div>
+<div class="grid-bg"></div>
+<nav>
+  <div class="container nav-inner">
+    <a class="brand" href="#">
+      <span class="logo">↯</span>
+      <span>DailyFlow</span>
+    </a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" title="Ganti tema">☀️</button>
+      <button class="btn desktop" id="refreshBtn">↻ Refresh</button>
+      <a class="btn primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">Buka 9Router ↗</a>
+    </div>
+  </div>
+</nav>
 
-  <nav>
-    <div class="container nav-inner">
-      <a class="brand" href="#home" aria-label="DailyFlow Home">
-        <span class="logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M5 7.5h8.5a3.5 3.5 0 0 1 0 7H8" stroke="white" stroke-width="2" stroke-linecap="round"/>
-            <path d="M9 4 5 7.5 9 11M15 13l4 3.5L15 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-        <span>DailyFlow</span>
-      </a>
-
-      <div class="nav-links" id="navLinks">
-        <a href="#home" class="active">Beranda</a>
-        <a href="#features">Fitur</a>
-        <a href="#workflow">Workflow</a>
-        <a href="#access">Akses</a>
-      </div>
-
-      <div class="nav-actions">
-        <button class="icon-btn" id="themeBtn" aria-label="Ganti tema" title="Ganti tema">☀️</button>
-        <a class="btn btn-primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">
-          Buka 9Router
-          <span aria-hidden="true">↗</span>
-        </a>
-        <button class="menu-btn" id="menuBtn" aria-label="Buka menu">☰</button>
+<main class="container">
+  <section class="hero">
+    <div>
+      <span class="eyebrow"><span class="dot" id="liveDot"></span><span id="connectionLabel">Menghubungkan statistik...</span></span>
+      <h1>Satu halaman untuk <span class="gradient">DailyFlow & 9Router.</span></h1>
+      <p>Landing page, status sistem, token usage, request, latency, provider, model, dan aktivitas terbaru dalam satu tampilan tanpa memperlihatkan API key.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">Akses 9Router</a>
+        <button class="btn" id="copyBtn">Salin endpoint API</button>
       </div>
     </div>
-  </nav>
 
-  <main>
-    <section class="hero" id="home">
-      <div class="container hero-grid">
-        <div class="reveal">
-          <div class="eyebrow">
-            <span class="pulse-dot"></span>
-            Sistem DailyFlow aktif
-          </div>
+    <aside class="status-panel">
+      <div class="status-title">
+        <strong>Status sistem</strong>
+        <small id="updatedAt">Belum ada data</small>
+      </div>
+      <div class="status-list">
+        <div class="status-row"><div><strong>Website</strong><br><small>dailyflo.me</small></div><b style="color:var(--green)">Online</b></div>
+        <div class="status-row"><div><strong>9Router</strong><br><small>router.dailyflo.me</small></div><b id="routerStatus">Memeriksa</b></div>
+        <div class="status-row"><div><strong>Sumber statistik</strong><br><small>/public-usage</small></div><b id="sourceMode">Live</b></div>
+      </div>
+    </aside>
+  </section>
 
-          <h1>
-            Alur kerja AI yang
-            <span class="gradient-text">lebih cepat.</span>
-          </h1>
+  <section class="cards">
+    <article class="card"><div class="label"><span>Total token</span><span>◈</span></div><div class="metric" id="totalTokens">0</div><div class="delta" id="tokenDelta">Menunggu data</div></article>
+    <article class="card"><div class="label"><span>Input token</span><span>↘</span></div><div class="metric" id="inputTokens">0</div><div class="delta">Prompt & context</div></article>
+    <article class="card"><div class="label"><span>Output token</span><span>↗</span></div><div class="metric" id="outputTokens">0</div><div class="delta">Respons model</div></article>
+    <article class="card"><div class="label"><span>Total request</span><span>◎</span></div><div class="metric" id="requests">0</div><div class="delta" id="successRate">Menunggu data</div></article>
+  </section>
 
-          <p>
-            DailyFlow menyatukan akses AI, workflow, dan 9Router dalam satu pengalaman yang modern,
-            aman, dan mudah digunakan dari perangkat apa pun.
-          </p>
-
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">
-              Mulai dengan 9Router
-              <span aria-hidden="true">→</span>
-            </a>
-            <a class="btn btn-secondary" href="#features">Lihat fitur</a>
-          </div>
-
-          <div class="mini-stats">
-            <div class="mini-stat">
-              <strong>24/7</strong>
-              <span>Akses cloud</span>
-            </div>
-            <div class="mini-stat">
-              <strong>HTTPS</strong>
-              <span>Koneksi aman</span>
-            </div>
-            <div class="mini-stat">
-              <strong>Mobile</strong>
-              <span>Siap di semua layar</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="terminal-card reveal" id="tiltCard">
-          <div class="terminal-head">
-            <div class="dots"><span></span><span></span><span></span></div>
-            <div class="terminal-label">dailyflow-console</div>
-          </div>
-
-          <div class="terminal-body">
-            <div class="code-line"><span class="n">1</span><span class="cmd">$ initialize dailyflow</span></div>
-            <div class="code-line"><span class="n">2</span><span class="ok">✓ workspace connected</span></div>
-            <div class="code-line"><span class="n">3</span><span class="cyan">→ tunnel: router.dailyflo.me</span></div>
-            <div class="code-line"><span class="n">4</span><span class="violet">→ service: 9Router</span></div>
-            <div class="code-line"><span class="n">5</span><span class="ok">✓ secure route established</span></div>
-            <div class="code-line"><span class="n">6</span><span class="cmd" id="typingLine"></span></div>
-
-            <div class="status-panel">
-              <div class="status-box">
-                <small>Website</small>
-                <strong>Online</strong>
-              </div>
-              <div class="status-box">
-                <small>Tunnel</small>
-                <strong>Connected</strong>
-              </div>
-              <div class="status-box">
-                <small>Security</small>
-                <strong>HTTPS</strong>
-              </div>
-            </div>
-          </div>
+  <section class="dashboard">
+    <article class="card chart-card">
+      <div class="card-head">
+        <div><h2>Pergerakan token</h2><small>Input dan output diperbarui otomatis</small></div>
+        <div class="segmented">
+          <button class="active" data-window="20">20x</button>
+          <button data-window="40">40x</button>
+          <button data-window="60">60x</button>
         </div>
       </div>
-    </section>
+      <div class="canvas-wrap"><canvas id="usageChart"></canvas></div>
+    </article>
 
-    <section id="features">
-      <div class="container">
-        <div class="section-head reveal">
-          <span class="tag">Fitur utama</span>
-          <h2>Satu tempat untuk semua alur kerja Anda.</h2>
-          <p>Dirancang untuk cepat, ringan, dan nyaman digunakan dari desktop maupun perangkat seluler.</p>
-        </div>
+    <article class="card">
+      <div class="card-head"><div><h2>Distribusi provider</h2><small>Statistik agregat</small></div></div>
+      <div class="providers" id="providers"></div>
+      <div class="notice">Field sensitif seperti API key, authorization, secret, password, cookie, credential, isi prompt, dan isi respons tidak pernah ditampilkan.</div>
+    </article>
+  </section>
 
-        <div class="features-grid">
-          <article class="card reveal">
-            <div class="feature-icon">⚡</div>
-            <h3>Akses Cepat</h3>
-            <p>Buka layanan utama Anda melalui satu domain yang mudah diingat dan responsif.</p>
-          </article>
+  <section class="lower">
+    <article class="card">
+      <div class="card-head"><div><h2>Aktivitas terbaru</h2><small>Metadata ringkas saja</small></div></div>
+      <div class="activity" id="activity"></div>
+    </article>
 
-          <article class="card reveal">
-            <div class="feature-icon">🔐</div>
-            <h3>Koneksi Aman</h3>
-            <p>HTTPS dan Cloudflare Tunnel membantu menjaga koneksi tetap terenkripsi.</p>
-          </article>
-
-          <article class="card reveal">
-            <div class="feature-icon">🧠</div>
-            <h3>AI Workflow</h3>
-            <p>Susun alur kerja AI dan akses provider melalui 9Router dari satu titik.</p>
-          </article>
-
-          <article class="card reveal">
-            <div class="feature-icon">📱</div>
-            <h3>Responsif</h3>
-            <p>Tampilan menyesuaikan otomatis di laptop, tablet, dan layar ponsel.</p>
-          </article>
-
-          <article class="card reveal">
-            <div class="feature-icon">🌗</div>
-            <h3>Dark & Light</h3>
-            <p>Ganti tema secara instan. Pilihan tema tersimpan otomatis di browser.</p>
-          </article>
-
-          <article class="card reveal">
-            <div class="feature-icon">🧩</div>
-            <h3>Mudah Dikembangkan</h3>
-            <p>Seluruh situs berada dalam satu file HTML agar gampang diunggah dan diedit.</p>
-          </article>
-        </div>
+    <article class="card">
+      <div class="card-head"><div><h2>Privasi & keamanan</h2><small>Dirancang untuk tampilan publik</small></div></div>
+      <div class="security">
+        <div class="safe-item"><div class="safe-icon">🔒</div><div><strong>API key tidak dirender</strong><span>Frontend hanya menerima statistik yang sudah disanitasi.</span></div></div>
+        <div class="safe-item"><div class="safe-icon">🧾</div><div><strong>Isi percakapan disembunyikan</strong><span>Dashboard hanya memakai total token, provider, model, status, dan latency.</span></div></div>
+        <div class="safe-item"><div class="safe-icon">🛡️</div><div><strong>Fallback aman</strong><span>Jika endpoint belum aktif, halaman memakai simulasi lokal tanpa credential.</span></div></div>
       </div>
-    </section>
+    </article>
+  </section>
 
-    <section id="workflow">
-      <div class="container workflow">
-        <div class="workflow-copy reveal">
-          <span class="tag" style="color:var(--primary-2);font-weight:800;text-transform:uppercase;letter-spacing:.13em;font-size:.84rem;">Cara kerja</span>
-          <h2>Dari ide ke eksekusi dalam beberapa langkah.</h2>
-          <p>Klik setiap langkah untuk melihat alur interaktif DailyFlow.</p>
+  <div class="footer">© <span id="year"></span> DailyFlow · One-page dashboard</div>
+</main>
 
-          <div class="steps">
-            <div class="step active" data-step="0">
-              <div class="step-num">01</div>
-              <div><strong>Pilih kebutuhan</strong><span>Tentukan tugas atau workflow yang ingin dijalankan.</span></div>
-            </div>
-            <div class="step" data-step="1">
-              <div class="step-num">02</div>
-              <div><strong>Hubungkan layanan</strong><span>Arahkan akses melalui 9Router dan tunnel aman.</span></div>
-            </div>
-            <div class="step" data-step="2">
-              <div class="step-num">03</div>
-              <div><strong>Jalankan workflow</strong><span>Mulai bekerja dari desktop atau ponsel.</span></div>
-            </div>
-          </div>
-        </div>
+<div class="toast" id="toast"></div>
 
-        <div class="demo-panel reveal">
-          <div class="demo-top">
-            <div class="demo-title">
-              <small>Interactive preview</small>
-              <strong id="demoHeading">Pilih kebutuhan</strong>
-            </div>
-            <div class="online"><span class="pulse-dot"></span> Live</div>
-          </div>
+<script>
+const PUBLIC_STATS_ENDPOINT = "https://router.dailyflo.me/public-usage";
+const ROUTER_HEALTH_URL = "https://router.dailyflo.me/";
+const sensitivePattern = /(api.?key|access.?token|refresh.?token|authorization|secret|password|credential|cookie|prompt|message|content)/i;
+const $ = id => document.getElementById(id);
+const fmt = n => new Intl.NumberFormat("id-ID",{notation:n>=1000000?"compact":"standard",maximumFractionDigits:1}).format(Math.round(Number(n)||0));
+let chartWindow=20,sessionStart=0,usingDemo=false;
+let state={
+  totalTokens:126480,inputTokens:78320,outputTokens:48160,requests:342,successes:335,failures:7,
+  providers:[{name:"Claude",value:36,model:"Sonnet"},{name:"Gemini",value:27,model:"Flash"},{name:"OpenAI",value:22,model:"GPT"},{name:"Fallback",value:15,model:"Lainnya"}],
+  history:Array.from({length:20},(_,i)=>({time:i,input:2200+Math.random()*1800,output:1100+Math.random()*1100})),
+  recent:[]
+};
+sessionStart=state.totalTokens;
 
-          <div class="flow-board">
-            <div class="node highlight" id="nodeA">
-              <span class="chip" id="chipA">Input</span>
-              <strong id="nodeATitle">Ide / Perintah</strong>
-              <small id="nodeADesc">Masukkan tujuan yang ingin Anda capai.</small>
-            </div>
-
-            <div class="connector"></div>
-
-            <div class="node" id="nodeB">
-              <span class="chip" id="chipB">Output</span>
-              <strong id="nodeBTitle">Workflow siap</strong>
-              <small id="nodeBDesc">DailyFlow mengarahkan Anda ke layanan terkait.</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta" id="access">
-      <div class="container">
-        <div class="cta-box reveal">
-          <h2>Siap membuka 9Router?</h2>
-          <p>Gunakan koneksi aman melalui subdomain DailyFlow dan mulai mengelola workflow AI Anda.</p>
-          <a class="btn btn-primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">
-            Akses router.dailyflo.me
-            <span aria-hidden="true">↗</span>
-          </a>
-          <button class="btn btn-secondary" id="copyBtn" style="margin-left:8px;">
-            Salin alamat
-          </button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-inner">
-      <div>© <span id="year"></span> DailyFlow</div>
-      <div>Built for speed, clarity, and secure access.</div>
-    </div>
-  </footer>
-
-  <div class="toast" id="toast">Alamat berhasil disalin.</div>
-
-  <script>
-    const body = document.body;
-    const themeBtn = document.getElementById('themeBtn');
-    const menuBtn = document.getElementById('menuBtn');
-    const navLinks = document.getElementById('navLinks');
-    const toast = document.getElementById('toast');
-    const copyBtn = document.getElementById('copyBtn');
-
-    const savedTheme = localStorage.getItem('dailyflow-theme');
-    if (savedTheme === 'light') body.classList.add('light');
-    themeBtn.textContent = body.classList.contains('light') ? '🌙' : '☀️';
-
-    themeBtn.addEventListener('click', () => {
-      body.classList.toggle('light');
-      const isLight = body.classList.contains('light');
-      localStorage.setItem('dailyflow-theme', isLight ? 'light' : 'dark');
-      themeBtn.textContent = isLight ? '🌙' : '☀️';
-    });
-
-    menuBtn.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-      menuBtn.textContent = navLinks.classList.contains('open') ? '✕' : '☰';
-    });
-
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-        menuBtn.textContent = '☰';
-      });
-    });
-
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.12 });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    const sections = [...document.querySelectorAll('main section[id]')];
-    const navAnchors = [...document.querySelectorAll('.nav-links a')];
-
-    window.addEventListener('scroll', () => {
-      let current = 'home';
-      sections.forEach(section => {
-        if (window.scrollY >= section.offsetTop - 130) current = section.id;
-      });
-      navAnchors.forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-      });
-    });
-
-    const texts = [
-      'ready for your next workflow...',
-      'routing securely through Cloudflare...',
-      '9Router connection available...'
-    ];
-    const typingLine = document.getElementById('typingLine');
-    let textIndex = 0, charIndex = 0, deleting = false;
-
-    function typeLoop() {
-      const current = texts[textIndex];
-      typingLine.textContent = current.slice(0, charIndex);
-
-      if (!deleting && charIndex < current.length) {
-        charIndex++;
-        setTimeout(typeLoop, 55);
-      } else if (!deleting && charIndex === current.length) {
-        deleting = true;
-        setTimeout(typeLoop, 1500);
-      } else if (deleting && charIndex > 0) {
-        charIndex--;
-        setTimeout(typeLoop, 28);
-      } else {
-        deleting = false;
-        textIndex = (textIndex + 1) % texts.length;
-        setTimeout(typeLoop, 300);
-      }
-    }
-    typeLoop();
-
-    const stepsData = [
-      {
-        heading: 'Pilih kebutuhan',
-        chipA: 'Input',
-        titleA: 'Ide / Perintah',
-        descA: 'Masukkan tujuan yang ingin Anda capai.',
-        chipB: 'Output',
-        titleB: 'Workflow siap',
-        descB: 'DailyFlow mengarahkan Anda ke layanan terkait.'
-      },
-      {
-        heading: 'Hubungkan layanan',
-        chipA: 'Gateway',
-        titleA: 'Cloudflare Tunnel',
-        descA: 'Koneksi diteruskan melalui jalur terenkripsi.',
-        chipB: 'Service',
-        titleB: '9Router',
-        descB: 'Layanan lokal dapat diakses melalui domain Anda.'
-      },
-      {
-        heading: 'Jalankan workflow',
-        chipA: 'Device',
-        titleA: 'Desktop / Mobile',
-        descA: 'Bekerja dari perangkat yang sedang Anda gunakan.',
-        chipB: 'Result',
-        titleB: 'Eksekusi cepat',
-        descB: 'Workflow berjalan dalam antarmuka yang konsisten.'
-      }
-    ];
-
-    const steps = document.querySelectorAll('.step');
-    const fields = {
-      heading: document.getElementById('demoHeading'),
-      chipA: document.getElementById('chipA'),
-      titleA: document.getElementById('nodeATitle'),
-      descA: document.getElementById('nodeADesc'),
-      chipB: document.getElementById('chipB'),
-      titleB: document.getElementById('nodeBTitle'),
-      descB: document.getElementById('nodeBDesc')
-    };
-
-    steps.forEach(step => {
-      step.addEventListener('click', () => {
-        const index = Number(step.dataset.step);
-        const data = stepsData[index];
-
-        steps.forEach(s => s.classList.remove('active'));
-        step.classList.add('active');
-
-        Object.entries(fields).forEach(([key, el]) => {
-          el.animate([{opacity: 0, transform: 'translateY(5px)'}, {opacity: 1, transform: 'translateY(0)'}], {duration: 280});
-          el.textContent = data[key];
-        });
-
-        document.getElementById('nodeA').classList.toggle('highlight', index !== 2);
-        document.getElementById('nodeB').classList.toggle('highlight', index === 2);
-      });
-    });
-
-    copyBtn.addEventListener('click', async () => {
-      const value = 'https://router.dailyflo.me';
-      try {
-        await navigator.clipboard.writeText(value);
-      } catch {
-        const input = document.createElement('input');
-        input.value = value;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        input.remove();
-      }
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2200);
-    });
-
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    const tiltCard = document.getElementById('tiltCard');
-    tiltCard.addEventListener('mousemove', e => {
-      if (window.innerWidth < 921) return;
-      const rect = tiltCard.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - .5;
-      const y = (e.clientY - rect.top) / rect.height - .5;
-      tiltCard.style.transform = `perspective(1200px) rotateY(${x * 8}deg) rotateX(${y * -7}deg) translateY(-3px)`;
-    });
-    tiltCard.addEventListener('mouseleave', () => {
-      tiltCard.style.transform = '';
-    });
-
-    window.addEventListener('mousemove', e => {
-      const x = (e.clientX / innerWidth - .5) * 24;
-      const y = (e.clientY / innerHeight - .5) * 24;
-      document.querySelector('.orb.one').style.transform = `translate(${x}px, ${y}px)`;
-      document.querySelector('.orb.two').style.transform = `translate(${-x}px, ${-y}px)`;
-    });
-  </script>
+function safeObject(value,depth=0){
+  if(depth>6)return null;
+  if(Array.isArray(value))return value.map(v=>safeObject(v,depth+1)).filter(v=>v!==null);
+  if(value&&typeof value==="object"){
+    const out={};
+    for(const[k,v]of Object.entries(value)){if(sensitivePattern.test(k))continue;out[k]=safeObject(v,depth+1)}
+    return out;
+  }
+  return value;
+}
+function normalize(raw){
+  const d=safeObject(raw);
+  if(!d||typeof d!=="object")throw new Error("Format data tidak valid");
+  return{
+    totalTokens:Number(d.totalTokens??d.total_tokens??0),
+    inputTokens:Number(d.inputTokens??d.input_tokens??0),
+    outputTokens:Number(d.outputTokens??d.output_tokens??0),
+    requests:Number(d.requests??d.totalRequests??0),
+    successes:Number(d.successes??0),
+    failures:Number(d.failures??0),
+    providers:Array.isArray(d.providers)?d.providers.slice(0,8).map(p=>({name:String(p.name||p.provider||"Provider").slice(0,30),value:Math.max(0,Math.min(100,Number(p.value??p.percent??0))),model:String(p.model||"").slice(0,40)})):[],
+    history:Array.isArray(d.history)?d.history.slice(-60).map((h,i)=>({time:h.time??i,input:Number(h.input??h.inputTokens??0),output:Number(h.output??h.outputTokens??0)})):[],
+    recent:Array.isArray(d.recent)?d.recent.slice(0,12):[],
+    updatedAt:d.updatedAt||new Date().toISOString()
+  };
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]))}
+function render(){
+  $("totalTokens").textContent=fmt(state.totalTokens);
+  $("inputTokens").textContent=fmt(state.inputTokens);
+  $("outputTokens").textContent=fmt(state.outputTokens);
+  $("requests").textContent=fmt(state.requests);
+  $("tokenDelta").textContent="+"+fmt(Math.max(0,state.totalTokens-sessionStart))+" dalam sesi ini";
+  const totalReq=Math.max(1,state.successes+state.failures);
+  $("successRate").textContent=Math.round(state.successes/totalReq*100)+"% berhasil";
+  $("providers").innerHTML=(state.providers.length?state.providers:[{name:"Belum ada data",value:0,model:"-"}]).map(p=>`
+    <div class="provider"><div class="provider-top"><div><strong>${esc(p.name)}</strong><br><small>${esc(p.model||"Model")}</small></div><strong>${Math.round(p.value)}%</strong></div>
+    <div class="bar"><span style="width:${Math.max(0,Math.min(100,p.value))}%"></span></div></div>`).join("");
+  $("activity").innerHTML=(state.recent.length?state.recent:[{provider:"Belum ada aktivitas",model:"-",input:0,output:0,status:"-",latencyMs:0,time:new Date().toISOString()}]).map(x=>`
+    <div class="event"><span class="event-dot"></span><div><strong>${esc(x.provider||"Provider")} · ${esc(x.model||"Model")}</strong>
+    <p>${fmt(x.input)} input · ${fmt(x.output)} output · HTTP ${esc(x.status)}</p></div><time>${Number(x.latencyMs)||0} ms</time></div>`).join("");
+  $("updatedAt").textContent=state.updatedAt?new Date(state.updatedAt).toLocaleTimeString("id-ID"):"Belum ada data";
+  drawChart();
+}
+const canvas=$("usageChart"),ctx=canvas.getContext("2d");
+function drawChart(){
+  const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
+  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  const w=rect.width,h=rect.height,pad={l:46,r:16,t:14,b:30},data=state.history.slice(-chartWindow),max=Math.max(1,...data.flatMap(d=>[d.input,d.output]))*1.18;
+  ctx.clearRect(0,0,w,h);const css=getComputedStyle(document.body),grid=css.getPropertyValue("--line"),muted=css.getPropertyValue("--muted");
+  ctx.strokeStyle=grid;ctx.lineWidth=1;ctx.fillStyle=muted;ctx.font="11px system-ui";
+  for(let i=0;i<=4;i++){const y=pad.t+(h-pad.t-pad.b)*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText(fmt(max*(1-i/4)),4,y+4)}
+  const plot=(key,color)=>{ctx.beginPath();data.forEach((d,i)=>{const x=pad.l+(w-pad.l-pad.r)*(data.length===1?0:i/(data.length-1)),y=h-pad.b-(h-pad.t-pad.b)*(d[key]/max);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.strokeStyle=color;ctx.lineWidth=2.3;ctx.stroke()};
+  plot("input","#8065ff");plot("output","#22c8ff");
+  ctx.fillStyle="#8065ff";ctx.fillRect(pad.l,h-14,10,3);ctx.fillStyle=muted;ctx.fillText("Input",pad.l+15,h-9);
+  ctx.fillStyle="#22c8ff";ctx.fillRect(pad.l+70,h-14,10,3);ctx.fillStyle=muted;ctx.fillText("Output",pad.l+85,h-9);
+}
+function demoTick(){
+  if(!usingDemo)return;
+  const input=Math.round(700+Math.random()*4200),output=Math.round(350+Math.random()*2200);
+  state.inputTokens+=input;state.outputTokens+=output;state.totalTokens+=input+output;state.requests+=1;state.successes+=1;
+  state.history.push({time:Date.now(),input,output});if(state.history.length>80)state.history.shift();
+  const p=state.providers[Math.floor(Math.random()*state.providers.length)];
+  state.recent.unshift({provider:p.name,model:p.model,input,output,status:200,latencyMs:Math.round(350+Math.random()*900),time:new Date().toISOString()});
+  if(state.recent.length>10)state.recent.pop();state.updatedAt=new Date().toISOString();render();
+}
+async function fetchLive(){
+  try{
+    const r=await fetch(PUBLIC_STATS_ENDPOINT,{cache:"no-store",credentials:"omit"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    state=normalize(await r.json());usingDemo=false;
+    $("connectionLabel").textContent="Data live tersanitasi";
+    $("sourceMode").textContent="Live";
+    $("routerStatus").textContent="Online";$("routerStatus").style.color="var(--green)";
+    render();
+  }catch(e){
+    usingDemo=true;
+    $("connectionLabel").textContent="Mode demo — endpoint belum aktif";
+    $("sourceMode").textContent="Demo";
+    $("routerStatus").textContent="Tidak terhubung";$("routerStatus").style.color="var(--yellow)";
+    render();
+  }
+}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2200)}
+$("copyBtn").onclick=async()=>{await navigator.clipboard.writeText("https://router.dailyflo.me/v1");toast("Endpoint API disalin")};
+$("refreshBtn").onclick=()=>{fetchLive();toast("Data diperbarui")};
+$("themeBtn").onclick=()=>{document.body.classList.toggle("light");const light=document.body.classList.contains("light");$("themeBtn").textContent=light?"🌙":"☀️";localStorage.setItem("df-theme",light?"light":"dark");drawChart()};
+if(localStorage.getItem("df-theme")==="light"){document.body.classList.add("light");$("themeBtn").textContent="🌙"}
+document.querySelectorAll("[data-window]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-window]").forEach(x=>x.classList.remove("active"));b.classList.add("active");chartWindow=Number(b.dataset.window);drawChart()});
+window.addEventListener("resize",drawChart);
+$("year").textContent=new Date().getFullYear();
+render();fetchLive();setInterval(fetchLive,5000);setInterval(demoTick,2200);
+</script>
 </body>
 </html>
