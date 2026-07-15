@@ -1,31 +1,68 @@
-DAILYFLOW DYNAMIC PROVIDERS
+DAILYFLOW PROFESSIONAL DASHBOARD
+================================
 
-Isi:
-- server.js
-- index.html
-- package.json
+STRUKTUR
+-------
+index.html
+css/
+  dashboard.css
+  topology.css
+  animation.css
+js/
+  api.js
+  topology.js
+  charts.js
+  ui.js
+  app.js
 
-Tujuan:
-- Nama provider mengikuti data asli yang terbaca dari 9Router
-- Semua model dikelompokkan berdasarkan provider
-- Topology lebih kecil
-- Drag, zoom in/out, scroll zoom, dan reset tersedia
-- DailyFlow menjadi node pusat
-- Data sensitif tidak dikirim ke dashboard
+FITUR
+-----
+- Header status 9Router
+- KPI requests, token, latency, provider aktif
+- DailyFlow sebagai node pusat
+- Provider dinamis berdasarkan /public-usage
+- Model dikelompokkan berdasarkan provider
+- Layout radial otomatis
+- Drag, zoom in/out, scroll zoom, reset
+- Garis routing bergerak
+- Detail provider dan daftar model
+- Aktivitas terbaru
+- Grafik request dan token
+- Responsif
+- Dark/light mode
+- Demo otomatis jika endpoint belum aktif
+- Penyaringan field sensitif
 
-Instalasi proxy:
-1. Salin server.js dan package.json ke:
-   C:\dailyflow-9router-usage-proxy
-2. Jalankan:
-   cd /d C:\dailyflow-9router-usage-proxy
-   npm start
-3. Pastikan:
-   http://127.0.0.1:3031/health
-   http://127.0.0.1:3031/public-usage
+INSTALASI GITHUB PAGES
+----------------------
+1. Ekstrak ZIP.
+2. Upload seluruh isi folder ke root repository cgxaltarm.github.io.
+3. Pastikan struktur folder css/ dan js/ tetap sama.
+4. Commit ke branch main.
+5. Tunggu Pages deployment selesai.
+6. Buka:
+   https://dailyflo.me/?v=professional1
 
-Cloudflare Tunnel:
-router.dailyflo.me harus diarahkan ke:
-http://127.0.0.1:3031
+ENDPOINT
+--------
+Frontend membaca:
+https://router.dailyflo.me/public-usage
 
-GitHub Pages:
-Upload index.html ke repository cgxaltarm.github.io.
+Agar live, endpoint harus mengembalikan format yang kompatibel dengan server.js proxy yang sudah dibuat sebelumnya.
+
+KEAMANAN
+--------
+Frontend menyaring field:
+- apiKey
+- accessToken
+- refreshToken
+- authorization
+- secret
+- password
+- credential
+- cookie
+- prompt
+- message
+- content
+
+Jangan meneruskan respons admin 9Router mentah ke browser.
