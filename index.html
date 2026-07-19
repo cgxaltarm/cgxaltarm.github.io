@@ -1,206 +1,707 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="DailyFlow — professional 9Router observability dashboard.">
-  <meta name="theme-color" content="#07111f">
-  <title>DailyFlow · 9Router Observability</title>
-  <link rel="stylesheet" href="./css/dashboard.css">
-  <link rel="stylesheet" href="./css/topology.css">
-  <link rel="stylesheet" href="./css/animation.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free API Finder — Cari Free Public API & API Key</title>
+  <meta name="description" content="Website gratis untuk mencari free public API dan API key. Cocok untuk project di GitHub Pages." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --bg-hover: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-dark: #0ea5e9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --border: #334155;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .logo h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .stats strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Search & Filters */
+    .controls {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 24px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-group {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .filter-group select {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .filter-group select:focus {
+      border-color: var(--primary);
+    }
+
+    /* Results info */
+    .results-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .results-info strong {
+      color: var(--text);
+    }
+
+    /* Cards Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .card-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .card-title a:hover {
+      color: var(--primary);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-no {
+      background: rgba(74, 222, 128, 0.15);
+      color: var(--success);
+    }
+
+    .badge-key {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+    }
+
+    .badge-oauth {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--warning);
+    }
+
+    .badge-other {
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--text-muted);
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .meta-item {
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      background: var(--bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .meta-item.yes {
+      color: var(--success);
+    }
+
+    .meta-item.no {
+      color: var(--danger);
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: auto;
+    }
+
+    .category-tag {
+      font-size: 0.75rem;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--primary);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.1);
+      transition: background 0.2s;
+    }
+
+    .btn-link:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+
+    /* Loading & Empty */
+    .loading, .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .logo h1 {
+        font-size: 1.15rem;
+      }
+      .stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="page-grid" aria-hidden="true"></div>
-
-  <header class="topbar">
-    <div class="shell topbar-inner">
-      <a class="brand" href="#top" aria-label="DailyFlow">
-        <span class="brand-mark">D</span>
-        <span>
-          <strong>DailyFlow</strong>
-          <small>9Router Observability</small>
-        </span>
-      </a>
-
-      <div class="topbar-actions">
-        <div class="system-pill" id="systemPill">
-          <span class="status-dot idle" id="systemDot"></span>
-          <span id="systemLabel">Menghubungkan…</span>
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <div class="logo-icon">🔑</div>
+        <div>
+          <h1>Free API Finder</h1>
+          <span>Cari free public API & API key</span>
         </div>
-
-        <button class="icon-button" id="themeButton" type="button" aria-label="Ganti tema">☀️</button>
-        <button class="button secondary hide-mobile" id="refreshButton" type="button">↻ Refresh</button>
-        <a class="button primary" href="https://router.dailyflo.me" target="_blank" rel="noopener">Buka 9Router ↗</a>
+      </div>
+      <div class="stats" id="stats">
+        <div>Total: <strong id="totalCount">—</strong></div>
+        <div>Ditampilkan: <strong id="shownCount">—</strong></div>
       </div>
     </div>
   </header>
 
-  <main class="shell" id="top">
-    <section class="hero">
+  <main class="container">
+    <div class="controls">
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" id="searchInput" placeholder="Cari nama API, deskripsi, atau kata kunci..." autocomplete="off" />
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label for="categoryFilter">Kategori</label>
+          <select id="categoryFilter">
+            <option value="">Semua Kategori</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="authFilter">Autentikasi</label>
+          <select id="authFilter">
+            <option value="">Semua</option>
+            <option value="No">No Auth (tanpa key)</option>
+            <option value="apiKey">API Key (gratis)</option>
+            <option value="OAuth">OAuth</option>
+            <option value="other">Lainnya</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="httpsFilter">HTTPS</label>
+          <select id="httpsFilter">
+            <option value="">Semua</option>
+            <option value="true">Ya (HTTPS)</option>
+            <option value="false">Tidak</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="corsFilter">CORS</label>
+          <select id="corsFilter">
+            <option value="">Semua</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-info">
+      <div id="resultText">Memuat data...</div>
       <div>
-        <div class="eyebrow">
-          <span class="status-dot active"></span>
-          <span>Control center satu halaman</span>
-        </div>
-        <h1>Observasi routing AI dalam <span class="gradient-text">satu tampilan profesional.</span></h1>
-        <p>
-          Pantau provider, model, token, request, latency, error rate, dan aktivitas terbaru.
-          Nama provider serta model mengikuti data yang dikirim oleh 9Router.
-        </p>
+        <button id="randomBtn" style="background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.85rem;">
+          🎲 Acak 10 API
+        </button>
       </div>
+    </div>
 
-      <aside class="hero-summary">
-        <div>
-          <small>Sumber statistik</small>
-          <strong id="sourceMode">Menunggu endpoint</strong>
-        </div>
-        <div>
-          <small>Terakhir diperbarui</small>
-          <strong id="updatedAt">—</strong>
-        </div>
-        <div>
-          <small>Endpoint aman</small>
-          <strong>/public-usage</strong>
-        </div>
-      </aside>
-    </section>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Sedang mengambil data free API...</p>
+    </div>
 
-    <section class="kpi-grid" aria-label="Ringkasan">
-      <article class="kpi-card">
-        <div class="kpi-label"><span>Total Requests</span><span>◎</span></div>
-        <strong id="kpiRequests">0</strong>
-        <small id="kpiRequestTrend">Belum ada data</small>
-      </article>
-      <article class="kpi-card">
-        <div class="kpi-label"><span>Total Tokens</span><span>◈</span></div>
-        <strong id="kpiTokens">0</strong>
-        <small id="kpiTokenSplit">Input 0 · Output 0</small>
-      </article>
-      <article class="kpi-card">
-        <div class="kpi-label"><span>Average Latency</span><span>⚡</span></div>
-        <strong id="kpiLatency">0 ms</strong>
-        <small id="kpiLatencyState">Belum ada data</small>
-      </article>
-      <article class="kpi-card">
-        <div class="kpi-label"><span>Active Providers</span><span>●</span></div>
-        <strong id="kpiProviders">0 / 0</strong>
-        <small id="kpiModelCount">0 model terdeteksi</small>
-      </article>
-    </section>
+    <div id="empty" class="empty" style="display:none;">
+      <p style="font-size:1.2rem;margin-bottom:8px;">😕 Tidak ada hasil</p>
+      <p>Coba ubah kata kunci atau filter</p>
+    </div>
 
-    <section class="main-grid">
-      <article class="panel topology-panel">
-        <header class="panel-head">
-          <div>
-            <h2>Provider Topology</h2>
-            <p>DailyFlow berada di pusat. Provider disusun otomatis secara radial.</p>
-          </div>
-          <div class="legend" aria-label="Legenda status">
-            <span><i class="legend-dot active"></i>Aktif</span>
-            <span><i class="legend-dot slow"></i>Lambat</span>
-            <span><i class="legend-dot offline"></i>Offline</span>
-            <span><i class="legend-dot idle"></i>Idle</span>
-          </div>
-        </header>
-
-        <div class="topology-wrap" id="topologyWrap">
-          <div class="topology-stage" id="topologyStage">
-            <svg class="topology-links" id="topologyLinks" aria-hidden="true"></svg>
-          </div>
-
-          <div class="empty-state" id="topologyEmpty">
-            <strong>Belum ada provider</strong>
-            <span>Provider akan muncul setelah request melewati proxy usage.</span>
-          </div>
-
-          <div class="topology-controls" aria-label="Kontrol topology">
-            <button type="button" id="zoomInButton" aria-label="Zoom in">+</button>
-            <button type="button" id="zoomOutButton" aria-label="Zoom out">−</button>
-            <button type="button" id="resetTopologyButton" aria-label="Reset topology">⛶</button>
-          </div>
-        </div>
-      </article>
-
-      <aside class="side-stack">
-        <article class="panel">
-          <header class="panel-head compact">
-            <div>
-              <h2 id="detailProviderName">DailyFlow</h2>
-              <p id="detailProviderStatus">Routing center</p>
-            </div>
-            <span class="detail-badge" id="detailBadge">Core</span>
-          </header>
-
-          <div class="panel-body">
-            <div class="detail-stats">
-              <div><small>Requests</small><strong id="detailRequests">0</strong></div>
-              <div><small>Tokens</small><strong id="detailTokens">0</strong></div>
-              <div><small>Latency</small><strong id="detailLatency">—</strong></div>
-              <div><small>Error rate</small><strong id="detailError">—</strong></div>
-            </div>
-
-            <div class="models-head">
-              <strong>Models by provider</strong>
-              <small id="detailModelCount">0 model</small>
-            </div>
-            <div class="model-list" id="modelList"></div>
-          </div>
-        </article>
-
-        <article class="panel">
-          <header class="panel-head compact">
-            <div>
-              <h2>Recent Activity</h2>
-              <p>Metadata ringkas, tanpa prompt atau respons.</p>
-            </div>
-          </header>
-          <div class="activity-list" id="activityList"></div>
-        </article>
-      </aside>
-    </section>
-
-    <section class="charts-grid">
-      <article class="panel chart-panel">
-        <header class="panel-head compact">
-          <div>
-            <h2>Requests per interval</h2>
-            <p>Pergerakan jumlah request terbaru.</p>
-          </div>
-        </header>
-        <div class="chart-wrap"><canvas id="requestChart"></canvas></div>
-      </article>
-
-      <article class="panel chart-panel">
-        <header class="panel-head compact">
-          <div>
-            <h2>Tokens per interval</h2>
-            <p>Input dan output token dari history.</p>
-          </div>
-        </header>
-        <div class="chart-wrap"><canvas id="tokenChart"></canvas></div>
-      </article>
-    </section>
-
-    <section class="privacy-panel panel">
-      <div>
-        <h2>Privasi dan keamanan</h2>
-        <p>
-          Dashboard hanya menggunakan statistik agregat: provider, model, request, latency,
-          error rate, token, dan timestamp.
-        </p>
-      </div>
-      <div class="privacy-items">
-        <span>✓ API key tidak ditampilkan</span>
-        <span>✓ Authorization tidak dikirim ke frontend</span>
-        <span>✓ Prompt dan respons tidak dirender</span>
-        <span>✓ Fallback demo tanpa credential</span>
-      </div>
-    </section>
+    <div id="grid" class="grid" style="display:none;"></div>
   </main>
 
-  <div class="toast" id="toast" role="status"></div>
+  <footer>
+    <div class="container">
+      <p>
+        Data dari <a href="https://public-api-lists.github.io/public-api-lists/" target="_blank" rel="noopener">Public API Lists</a> · 
+        Dibuat untuk GitHub Pages · 
+        Tidak menyimpan atau menyediakan API key rahasia
+      </p>
+      <p style="margin-top:8px;font-size:0.8rem;">
+        Semua API di sini menawarkan free tier / free access. Daftar & dapatkan key sendiri di situs resmi masing-masing.
+      </p>
+    </div>
+  </footer>
 
-  <script type="module" src="./js/app.js"></script>
+  <script>
+    // ===== State =====
+    let allApis = [];
+    let filteredApis = [];
+
+    // ===== DOM =====
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const authFilter = document.getElementById('authFilter');
+    const httpsFilter = document.getElementById('httpsFilter');
+    const corsFilter = document.getElementById('corsFilter');
+    const grid = document.getElementById('grid');
+    const loading = document.getElementById('loading');
+    const empty = document.getElementById('empty');
+    const resultText = document.getElementById('resultText');
+    const totalCount = document.getElementById('totalCount');
+    const shownCount = document.getElementById('shownCount');
+    const randomBtn = document.getElementById('randomBtn');
+
+    // ===== Helpers =====
+    function getAuthBadge(auth) {
+      if (!auth || auth === 'No' || auth.toLowerCase() === 'no') {
+        return { class: 'badge-no', text: 'No Auth' };
+      }
+      if (auth.toLowerCase().includes('apikey') || auth === 'apiKey') {
+        return { class: 'badge-key', text: 'API Key' };
+      }
+      if (auth.toLowerCase().includes('oauth')) {
+        return { class: 'badge-oauth', text: 'OAuth' };
+      }
+      return { class: 'badge-other', text: auth };
+    }
+
+    function normalizeAuth(auth) {
+      if (!auth || auth === 'No' || auth.toLowerCase() === 'no') return 'No';
+      if (auth.toLowerCase().includes('apikey') || auth === 'apiKey') return 'apiKey';
+      if (auth.toLowerCase().includes('oauth')) return 'OAuth';
+      return 'other';
+    }
+
+    // ===== Render =====
+    function renderCards(apis) {
+      if (apis.length === 0) {
+        grid.style.display = 'none';
+        empty.style.display = 'block';
+        resultText.textContent = 'Tidak ada API yang cocok';
+        shownCount.textContent = '0';
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.style.display = 'grid';
+      shownCount.textContent = apis.length;
+      resultText.innerHTML = `Menampilkan <strong>${apis.length}</strong> dari <strong>${allApis.length}</strong> free API`;
+
+      grid.innerHTML = apis.map(api => {
+        const badge = getAuthBadge(api.auth);
+        const httpsClass = api.https ? 'yes' : 'no';
+        const httpsText = api.https ? 'HTTPS' : 'HTTP';
+        const corsText = api.cors || 'Unknown';
+        const corsClass = corsText === 'Yes' ? 'yes' : (corsText === 'No' ? 'no' : '');
+
+        return `
+          <article class="card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <a href="${api.url}" target="_blank" rel="noopener noreferrer">${escapeHtml(api.name)}</a>
+              </h2>
+              <span class="badge ${badge.class}">${badge.text}</span>
+            </div>
+            <p class="card-desc">${escapeHtml(api.description || 'Tidak ada deskripsi')}</p>
+            <div class="card-meta">
+              <span class="meta-item ${httpsClass}">
+                ${api.https ? '🔒' : '⚠️'} ${httpsText}
+              </span>
+              <span class="meta-item ${corsClass}">
+                CORS: ${corsText}
+              </span>
+            </div>
+            <div class="card-footer">
+              <span class="category-tag">${escapeHtml(api.category || 'Lainnya')}</span>
+              <a href="${api.url}" target="_blank" rel="noopener noreferrer" class="btn-link">
+                Dokumentasi →
+              </a>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ===== Filter =====
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      const cat = categoryFilter.value;
+      const auth = authFilter.value;
+      const https = httpsFilter.value;
+      const cors = corsFilter.value;
+
+      filteredApis = allApis.filter(api => {
+        // Search
+        if (query) {
+          const haystack = `${api.name} ${api.description} ${api.category}`.toLowerCase();
+          if (!haystack.includes(query)) return false;
+        }
+        // Category
+        if (cat && api.category !== cat) return false;
+        // Auth
+        if (auth) {
+          const normalized = normalizeAuth(api.auth);
+          if (auth === 'other') {
+            if (normalized === 'No' || normalized === 'apiKey' || normalized === 'OAuth') return false;
+          } else if (normalized !== auth) {
+            return false;
+          }
+        }
+        // HTTPS
+        if (https !== '') {
+          const wantHttps = https === 'true';
+          if (Boolean(api.https) !== wantHttps) return false;
+        }
+        // CORS
+        if (cors && (api.cors || 'Unknown') !== cors) return false;
+
+        return true;
+      });
+
+      renderCards(filteredApis);
+    }
+
+    // ===== Random =====
+    function showRandom() {
+      const shuffled = [...allApis].sort(() => Math.random() - 0.5);
+      const random10 = shuffled.slice(0, 10);
+      // Reset filters visually but show random
+      searchInput.value = '';
+      categoryFilter.value = '';
+      authFilter.value = '';
+      httpsFilter.value = '';
+      corsFilter.value = '';
+      renderCards(random10);
+      resultText.innerHTML = `🎲 Menampilkan <strong>10 API acak</strong>`;
+      shownCount.textContent = '10';
+    }
+
+    // ===== Init =====
+    async function init() {
+      try {
+        // Fetch all APIs
+        const res = await fetch('https://public-api-lists.github.io/public-api-lists/api/all.json');
+        if (!res.ok) throw new Error('Gagal mengambil data');
+        const data = await res.json();
+
+        allApis = data.entries || data || [];
+        totalCount.textContent = allApis.length;
+
+        // Populate categories
+        const categories = [...new Set(allApis.map(a => a.category).filter(Boolean))].sort();
+        categories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          categoryFilter.appendChild(opt);
+        });
+
+        // Initial render
+        loading.style.display = 'none';
+        applyFilters();
+
+        // Event listeners
+        searchInput.addEventListener('input', debounce(applyFilters, 250));
+        categoryFilter.addEventListener('change', applyFilters);
+        authFilter.addEventListener('change', applyFilters);
+        httpsFilter.addEventListener('change', applyFilters);
+        corsFilter.addEventListener('change', applyFilters);
+        randomBtn.addEventListener('click', showRandom);
+
+      } catch (err) {
+        loading.innerHTML = `
+          <p style="color:var(--danger);font-size:1.1rem;">❌ Gagal memuat data</p>
+          <p style="margin-top:8px;">${err.message}</p>
+          <p style="margin-top:12px;font-size:0.9rem;">Coba refresh halaman atau periksa koneksi internet.</p>
+        `;
+        console.error(err);
+      }
+    }
+
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    // Start
+    init();
+  </script>
 </body>
 </html>
