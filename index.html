@@ -3,262 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Free AI Credits Directory — 55+ Sumber Free Kredit AI (Global + China)</title>
-  <meta name="description" content="Kumpulan 55+ website & program free AI credits, free API key, free trial. Termasuk provider China (Qwen, SiliconFlow, Kimi, GLM, MiniMax) + tutorial cara klaim." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #09090b; --card: #18181b; --card-hover: #27272a; --border: #27272a;
-      --text: #fafafa; --muted: #a1a1aa; --primary: #22d3ee; --green: #4ade80;
-      --orange: #fb923c; --purple: #c084fc; --blue: #60a5fa; --pink: #f472b6;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; min-height: 100vh; }
-    .container { max-width: 1160px; margin: 0 auto; padding: 0 18px; }
-    header { padding: 32px 0 24px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #0c0c0f 0%, var(--bg) 100%); }
-    .header-content { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-icon { width: 46px; height: 46px; background: linear-gradient(135deg, #22d3ee, #818cf8); border-radius: 12px; display: grid; place-items: center; font-size: 22px; }
-    .brand h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
-    .brand p { font-size: 0.82rem; color: var(--muted); }
-    .update-badge { background: rgba(34,211,238,0.1); color: var(--primary); font-size: 0.78rem; font-weight: 600; padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(34,211,238,0.25); }
-    .controls { margin: 24px 0 16px; }
-    .search-box { position: relative; margin-bottom: 12px; }
-    .search-box input { width: 100%; padding: 13px 14px 13px 44px; background: var(--card); border: 1px solid var(--border); border-radius: 11px; color: var(--text); font-size: 0.95rem; outline: none; }
-    .search-box input:focus { border-color: var(--primary); }
-    .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); }
-    .filters { display: flex; flex-wrap: wrap; gap: 7px; }
-    .filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 7px 13px; border-radius: 999px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-    .filter-btn:hover, .filter-btn.active { background: rgba(34,211,238,0.12); border-color: var(--primary); color: var(--primary); }
-    .stats { display: flex; gap: 18px; margin-bottom: 18px; font-size: 0.88rem; color: var(--muted); }
-    .stats strong { color: var(--text); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; padding-bottom: 50px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 13px; padding: 18px; display: flex; flex-direction: column; transition: all 0.2s; }
-    .card:hover { border-color: #3f3f46; background: var(--card-hover); transform: translateY(-2px); }
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
-    .card-title { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
-    .type-badge { font-size: 0.65rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.03em; }
-    .type-api { background: rgba(34,211,238,0.15); color: var(--primary); }
-    .type-china { background: rgba(248,113,113,0.15); color: #f87171; }
-    .type-credit { background: rgba(74,222,128,0.15); color: var(--green); }
-    .type-trial { background: rgba(251,146,60,0.15); color: var(--orange); }
-    .type-startup { background: rgba(192,132,252,0.15); color: var(--purple); }
-    .type-cloud { background: rgba(96,165,250,0.15); color: var(--blue); }
-    .type-speech { background: rgba(244,114,182,0.15); color: var(--pink); }
-    .type-image { background: rgba(167,139,250,0.15); color: #a78bfa; }
-    .credit-amount { font-size: 0.95rem; font-weight: 700; color: var(--green); margin-bottom: 6px; }
-    .card-desc { font-size: 0.86rem; color: var(--muted); margin-bottom: 10px; flex-grow: 1; }
-    .steps { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.8rem; }
-    .steps strong { display: block; color: var(--primary); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-    .steps ol { margin: 0; padding-left: 18px; color: var(--muted); }
-    .steps li { margin-bottom: 3px; }
-    .card-footer { display: flex; gap: 8px; }
-    .btn { flex: 1; text-align: center; padding: 9px 11px; border-radius: 8px; font-size: 0.84rem; font-weight: 600; text-decoration: none; transition: all 0.15s; }
-    .btn-primary { background: linear-gradient(135deg, #22d3ee, #06b6d4); color: #09090b; }
-    .btn-primary:hover { filter: brightness(1.1); }
-    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-    .btn-secondary:hover { border-color: #52525b; color: var(--text); }
-    .empty { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--muted); }
-    footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--muted); font-size: 0.82rem; }
-    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .brand h1 { font-size: 1.15rem; } }
-  </style>
+  <title>Claude Clone — Custom AI Chat</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/xml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/css.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css" id="hljs-theme" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="container header-content">
-      <div class="brand">
-        <div class="brand-icon">🎁</div>
-        <div>
-          <h1>Free AI Credits</h1>
-          <p>55+ sumber free kredit AI (Global + China) + tutorial klaim</p>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <button id="btn-new-chat" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Obrolan Baru
+        </button>
+      </div>
+      <div id="chat-list" class="chat-list"></div>
+      <div class="sidebar-footer">
+        <button id="btn-settings" class="btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Pengaturan
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main id="main">
+      <header id="header">
+        <button id="btn-toggle-sidebar" class="btn-icon mobile-only">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"/>
+          </svg>
+        </button>
+        <div class="header-title">
+          <span class="logo">✦</span>
+          <span id="current-chat-title">Claude Clone</span>
+        </div>
+        <div class="header-actions">
+          <button id="btn-theme" class="btn-icon" title="Ganti tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div id="messages" class="messages">
+        <div id="welcome" class="welcome">
+          <div class="welcome-icon">✦</div>
+          <h1>Selamat datang di Claude Clone</h1>
+          <p>Chat AI dengan base URL &amp; API key milikmu sendiri.<br>Mirip Claude, 100% berjalan di browser, siap deploy ke GitHub Pages.</p>
+          <div class="welcome-tips">
+            <div class="tip">1. Buka <strong>Pengaturan</strong> → isi Base URL &amp; API Key</div>
+            <div class="tip">2. Pilih model (contoh: gpt-4o, claude-3-5-sonnet, llama-3.1-70b)</div>
+            <div class="tip">3. Mulai mengobrol!</div>
+          </div>
         </div>
       </div>
-      <div class="update-badge">Update Juli 2026</div>
-    </div>
-  </header>
 
-  <main class="container">
-    <div class="controls">
-      <div class="search-box">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" id="search" placeholder="Cari provider, Qwen, SiliconFlow, Groq, Kimi..." autocomplete="off" />
+      <div id="input-area" class="input-area">
+        <div class="input-wrapper">
+          <textarea id="user-input" placeholder="Ketik pesanmu di sini..." rows="1"></textarea>
+          <button id="btn-send" class="btn-send" disabled title="Kirim">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="input-footer">
+          <span id="model-badge">Model: —</span>
+          <span class="disclaimer">Powered by your API • Data tidak pernah dikirim ke server kami</span>
+        </div>
       </div>
-      <div class="filters" id="filters">
-        <button class="filter-btn active" data-filter="all">Semua</button>
-        <button class="filter-btn" data-filter="api">Free API</button>
-        <button class="filter-btn" data-filter="china">China</button>
-        <button class="filter-btn" data-filter="trial">Free Trial</button>
-        <button class="filter-btn" data-filter="startup">Startup</button>
-        <button class="filter-btn" data-filter="cloud">Cloud</button>
-        <button class="filter-btn" data-filter="speech">Speech</button>
-        <button class="filter-btn" data-filter="image">Image/Video</button>
-        <button class="filter-btn" data-filter="credit">Agregator</button>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Pengaturan</h2>
+        <button id="btn-close-settings" class="btn-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="base-url">Base URL</label>
+          <input type="url" id="base-url" placeholder="https://api.openai.com/v1" />
+          <small>Contoh: https://api.openai.com/v1 • https://api.groq.com/openai/v1 • https://openrouter.ai/api/v1</small>
+        </div>
+        <div class="form-group">
+          <label for="api-key">API Key</label>
+          <div class="input-with-toggle">
+            <input type="password" id="api-key" placeholder="sk-..." />
+            <button type="button" id="btn-toggle-key" class="btn-icon small">👁</button>
+          </div>
+          <small>Disimpan hanya di localStorage browser-mu. Tidak pernah dikirim ke mana pun kecuali ke Base URL yang kamu isi.</small>
+        </div>
+        <div class="form-group">
+          <label for="model-name">Model</label>
+          <input type="text" id="model-name" placeholder="gpt-4o" />
+          <small>Contoh: gpt-4o, claude-3-5-sonnet-20241022, llama-3.1-70b-versatile, gemini-2.0-flash</small>
+        </div>
+        <div class="form-group">
+          <label for="system-prompt">System Prompt</label>
+          <div class="preset-buttons" style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-preset" data-preset="claude">Gaya Claude</button>
+            <button type="button" class="btn-preset" data-preset="chatgpt">Gaya ChatGPT</button>
+            <button type="button" class="btn-preset" data-preset="default">Gabungan (Default)</button>
+          </div>
+          <textarea id="system-prompt" rows="6" placeholder="System prompt akan menentukan gaya jawaban AI..."></textarea>
+          <small>System prompt ini membuat AI merespons seperti Claude / ChatGPT. Kamu bisa edit bebas.</small>
+        </div>
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" id="stream-enabled" checked />
+            Aktifkan streaming (respons muncul real-time)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-settings" class="btn-primary">Simpan Pengaturan</button>
       </div>
     </div>
-    <div class="stats">
-      <div>Total: <strong id="total">0</strong> sumber</div>
-      <div>Ditampilkan: <strong id="shown">0</strong></div>
-    </div>
-    <div class="grid" id="grid"></div>
-  </main>
+  </div>
 
-  <footer>
-    <div class="container">
-      <p>Kumpulan link resmi + tutorial klaim singkat.<br>Selalu cek syarat di situs aslinya. Data bisa berubah.</p>
-      <p style="margin-top:8px;">Cocok untuk GitHub Pages · Tidak menyimpan API key</p>
-    </div>
-  </footer>
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
 
-  <script>
-    const data = [
-      { name: "Google AI Studio (Gemini)", type: "api", amount: "Free tier berkelanjutan", desc: "Gemini 2.5/3.x Flash + Gemma. Multimodal. Salah satu free tier paling stabil.", steps: ["Buka aistudio.google.com", "Login dengan akun Google", "Klik Get API key → Create API key", "Salin key & pakai di project"], claimUrl: "https://aistudio.google.com/apikey", docsUrl: "https://ai.google.dev/gemini-api/docs" },
-      { name: "Groq", type: "api", amount: "Free tier + rate limit harian", desc: "Inference tercepat (LPU). Llama 3.3/4, Qwen, Whisper. Sangat cocok real-time.", steps: ["Buka console.groq.com", "Sign up dengan email/Google", "Masuk ke API Keys → Create API Key", "Salin key (hanya muncul sekali)"], claimUrl: "https://console.groq.com/keys", docsUrl: "https://console.groq.com/docs" },
-      { name: "OpenRouter", type: "api", amount: "Banyak model :free", desc: "Satu key untuk puluhan model free. Limit naik setelah top-up $10 sekali seumur hidup.", steps: ["Buka openrouter.ai", "Sign up", "Pergi ke Keys → Create Key", "Pakai model yang bertanda :free"], claimUrl: "https://openrouter.ai/keys", docsUrl: "https://openrouter.ai/docs" },
-      { name: "Cerebras", type: "api", amount: "1 juta tokens/hari", desc: "Sangat cepat + model besar (Qwen3 235B, GPT-OSS). Cocok prompt panjang.", steps: ["Buka cloud.cerebras.ai", "Sign up dengan email", "Buat API key di dashboard", "Jangan resell key"], claimUrl: "https://cloud.cerebras.ai/", docsUrl: "https://inference-docs.cerebras.ai/" },
-      { name: "NVIDIA NIM", type: "api", amount: "Free evaluation (~40 RPM)", desc: "100+ model open-source (DeepSeek, Kimi, GLM, Llama, dll).", steps: ["Buka build.nvidia.com", "Login / buat akun NVIDIA", "Pilih model → Get API Key", "Kadang perlu verifikasi HP"], claimUrl: "https://build.nvidia.com/", docsUrl: "https://docs.api.nvidia.com/" },
-      { name: "Cloudflare Workers AI", type: "api", amount: "10.000 neurons/hari", desc: "Banyak model open-source di edge. Cocok serverless.", steps: ["Buka dash.cloudflare.com", "Buat akun / login", "Workers & Pages → AI → Get started", "Buat API token"], claimUrl: "https://dash.cloudflare.com/", docsUrl: "https://developers.cloudflare.com/workers-ai/" },
-      { name: "Mistral AI", type: "api", amount: "Experiment tier (~1B tokens/bln)", desc: "Model Eropa + Codestral untuk coding. Opt-in data untuk free tier penuh.", steps: ["Buka console.mistral.ai", "Sign up", "Aktifkan experiment / data sharing jika diminta", "Buat API key"], claimUrl: "https://console.mistral.ai/", docsUrl: "https://docs.mistral.ai/" },
-      { name: "Hugging Face Inference", type: "api", amount: "Free monthly credits", desc: "Ribuan model open-source + ZeroGPU Spaces.", steps: ["Buka huggingface.co", "Sign up", "Settings → Access Tokens → New token", "Pilih role Read / Write"], claimUrl: "https://huggingface.co/settings/tokens", docsUrl: "https://huggingface.co/docs/api-inference" },
-      { name: "GitHub Models", type: "api", amount: "Free untuk prototyping", desc: "Model OpenAI & open-weight lewat GitHub (GPT-4.1, Llama 4, DeepSeek R1).", steps: ["Login GitHub", "Buka github.com/marketplace/models", "Pilih model → Get started", "Generate token / pakai GitHub token"], claimUrl: "https://github.com/marketplace/models", docsUrl: "https://docs.github.com/en/github-models" },
-      { name: "FreeInference.org", type: "api", amount: "Free research & education", desc: "OpenAI-compatible dengan model frontier open-weight (GLM, Qwen, Kimi).", steps: ["Buka freeinference.org", "Sign up / minta key", "Pakai base URL mereka", "Cocok untuk research"], claimUrl: "https://freeinference.org/", docsUrl: "https://freeinference.org/" },
-      { name: "Cohere", type: "api", amount: "Free trial / evaluation", desc: "Command R bagus untuk RAG. Embeddings & Rerank.", steps: ["Buka dashboard.cohere.com", "Sign up", "Buat Trial API key", "Hanya untuk evaluasi"], claimUrl: "https://dashboard.cohere.com/", docsUrl: "https://docs.cohere.com/" },
-
-      { name: "SiliconFlow (硅基流动)", type: "china", amount: "Model ≤9B permanent free + bonus token", desc: "Sangat direkomendasikan. Banyak model open-source free (Qwen, GLM, DeepSeek distill, Llama). Rate limit tinggi.", steps: ["Buka cloud.siliconflow.cn", "Daftar (bisa pakai email/Google)", "Dashboard → API Keys → Create", "Pakai model kecil untuk free unlimited"], claimUrl: "https://cloud.siliconflow.cn/", docsUrl: "https://docs.siliconflow.cn/" },
-      { name: "Alibaba Cloud Bailian / DashScope (Qwen)", type: "china", amount: "Hingga jutaan–puluhan juta token free (new user)", desc: "Qwen full series + banyak model lain. Free quota besar untuk user baru (bisa 1jt–70jt token tergantung promo).", steps: ["Buka bailian.console.aliyun.com atau dashscope.aliyun.com", "Login / daftar akun Alibaba Cloud", "Aktifkan Model Studio / Bailian", "Buat API Key di konsol"], claimUrl: "https://bailian.console.aliyun.com/", docsUrl: "https://help.aliyun.com/zh/model-studio/" },
-      { name: "ModelScope (魔搭)", type: "china", amount: "Hingga 2000 panggilan/hari free", desc: "Hub model Alibaba. Banyak model Qwen, DeepSeek, GLM, MiniMax free inference.", steps: ["Buka modelscope.cn", "Daftar / login", "My → Access Token → buat token", "Pakai Inference API"], claimUrl: "https://modelscope.cn/my/myaccesstoken", docsUrl: "https://modelscope.cn/docs" },
-      { name: "Moonshot AI (Kimi)", type: "china", amount: "Free credits new user (juta token)", desc: "Kimi model kuat untuk long context & agent. Ada free quota saat daftar.", steps: ["Buka platform.moonshot.cn", "Daftar akun", "Buat API Key", "Cek kuota di dashboard"], claimUrl: "https://platform.moonshot.cn/", docsUrl: "https://platform.moonshot.cn/docs" },
-      { name: "Zhipu AI / Z.ai (GLM)", type: "china", amount: "Free non-commercial + trial", desc: "GLM series sangat kuat untuk coding & reasoning (GLM-4.5/4.7/5).", steps: ["Buka open.bigmodel.cn", "Daftar (email/HP)", "Buat API Key", "Baca terms non-commercial"], claimUrl: "https://open.bigmodel.cn/", docsUrl: "https://open.bigmodel.cn/dev/api" },
-      { name: "MiniMax", type: "china", amount: "Free trial + daily limit", desc: "Model multimodal (text, speech, video). Ada free trial & daily quota.", steps: ["Buka platform.minimaxi.com", "Daftar", "Buat API Key", "Cek free quota di konsol"], claimUrl: "https://platform.minimaxi.com/", docsUrl: "https://platform.minimaxi.com/document" },
-      { name: "DeepSeek", type: "china", amount: "Free credits saat daftar", desc: "DeepSeek V3/V4 sangat kuat & murah. Sering kasih free tokens di awal.", steps: ["Buka platform.deepseek.com", "Sign up", "Top-up / cek free credit", "Buat API Key"], claimUrl: "https://platform.deepseek.com/", docsUrl: "https://platform.deepseek.com/api-docs" },
-      { name: "Baidu Qianfan (文心)", type: "china", amount: "Free tokens new user", desc: "ERNIE models + third-party. Ada free quota untuk user baru.", steps: ["Buka console.bce.baidu.com/qianfan", "Daftar Baidu Cloud", "Aktifkan Qianfan", "Buat aplikasi & API Key"], claimUrl: "https://console.bce.baidu.com/qianfan/overview", docsUrl: "https://cloud.baidu.com/doc/WENXINWORKSHOP/index.html" },
-      { name: "Tencent Hunyuan (混元)", type: "china", amount: "Free tokens new user", desc: "Model multimodal Tencent. Ada free quota setelah real-name.", steps: ["Buka cloud.tencent.com/product/hunyuan", "Daftar Tencent Cloud", "Real-name verification", "Aktifkan & buat key"], claimUrl: "https://cloud.tencent.com/product/hunyuan", docsUrl: "https://cloud.tencent.com/document/product/1729" },
-      { name: "Volcano Engine (豆包 / Doubao)", type: "china", amount: "Free tokens harian / new user", desc: "Doubao series dari ByteDance. Sering ada free quota cukup besar.", steps: ["Buka console.volcengine.com", "Daftar", "Cari Ark / Doubao", "Buat endpoint & API Key"], claimUrl: "https://console.volcengine.com/ark", docsUrl: "https://www.volcengine.com/docs/82379" },
-      { name: "七牛云 AI (Qiniu)", type: "china", amount: "New user ~3 juta token", desc: "Agregator netral (DeepSeek, GLM, Kimi, Qwen, MiniMax, Doubao). OpenAI + Anthropic compatible.", steps: ["Buka www.qiniu.com", "Daftar", "Masuk AI / Model Plaza", "Klaim free package & buat key"], claimUrl: "https://www.qiniu.com/", docsUrl: "https://developer.qiniu.com/" },
-
-      { name: "Fireworks AI", type: "trial", amount: "$1–$50 free credits", desc: "Inference cepat open models. Sering kasih free credit user baru.", steps: ["Buka fireworks.ai", "Sign up", "Cek free credit di dashboard", "Buat API key"], claimUrl: "https://fireworks.ai/", docsUrl: "https://docs.fireworks.ai/" },
-      { name: "Together AI", type: "trial", amount: "Free credit signup", desc: "Hosting open-weight + fine-tuning. Ada free credit awal.", steps: ["Buka together.ai", "Sign up", "Lihat free credit", "Generate API key"], claimUrl: "https://www.together.ai/", docsUrl: "https://docs.together.ai/" },
-      { name: "Replicate", type: "trial", amount: "Free credit + Startup $1K–$10K", desc: "Jalankan Llama, FLUX, SDXL, Whisper via API.", steps: ["Buka replicate.com", "Sign up", "Cek credit", "Untuk startup: apply program"], claimUrl: "https://replicate.com/", docsUrl: "https://replicate.com/docs" },
-      { name: "Hyperbolic", type: "trial", amount: "Free trial credit", desc: "Inference murah model besar (Llama 405B, DeepSeek R1).", steps: ["Buka hyperbolic.xyz", "Sign up + verifikasi jika diminta", "Ambil free credit", "Buat key"], claimUrl: "https://hyperbolic.xyz/", docsUrl: "https://docs.hyperbolic.xyz/" },
-      { name: "OpenFrog", type: "trial", amount: "$1–$3 free testing credit", desc: "Akses DeepSeek V4, GLM 5, Kimi, Qwen dengan harga lebih murah.", steps: ["Buka openfrog.io", "Sign up → dapat $1", "Invite 5 orang untuk +$3", "Buat API key"], claimUrl: "https://openfrog.io/", docsUrl: "https://openfrog.io/" },
-
-      { name: "Anthropic Startup Program", type: "startup", amount: "Hingga $25K–$100K Claude", desc: "Kredit Claude untuk early-stage. Jalur direct + VC + Anthology.", steps: ["Siapkan pitch / produk yang pakai Claude", "Apply lewat situs Anthropic atau partner VC", "Tunggu review", "Terima credits di account"], claimUrl: "https://www.anthropic.com/contact-sales", docsUrl: "https://www.anthropic.com/" },
-      { name: "OpenAI for Startups / Grove", type: "startup", amount: "$2.5K–$50K+", desc: "VC partner, Grove cohort, Codex OSS, Ramp Founder Stack.", steps: ["Cek jalur yang cocok (VC / Grove / OSS)", "Apply sesuai program", "Dapat referral code jika lewat VC", "Redeem di platform OpenAI"], claimUrl: "https://openai.com/form/startup-credits", docsUrl: "https://openai.com/" },
-      { name: "Google for Startups Cloud", type: "startup", amount: "Hingga $200K–$350K", desc: "Kredit Google Cloud + Vertex AI + Gemini. Track AI-first lebih besar.", steps: ["Buka cloud.google.com/startup", "Apply Google for Startups", "Lengkapi data perusahaan", "Terima credits setelah approve"], claimUrl: "https://cloud.google.com/startup", docsUrl: "https://cloud.google.com/startup" },
-      { name: "Replicate Startup", type: "startup", amount: "$1K–$10K inference", desc: "Kredit open-weight models. Tidak wajib VC.", steps: ["Buka replicate.com", "Apply startup program", "Jelaskan use case", "Terima credits"], claimUrl: "https://replicate.com/", docsUrl: "https://replicate.com/" },
-      { name: "Together AI Accelerator", type: "startup", amount: "$15K–$50K", desc: "Kredit fine-tuning & inference open models.", steps: ["Buka together.ai", "Cari Accelerator / Startup", "Apply dengan produk AI-native", "Tunggu selection"], claimUrl: "https://www.together.ai/", docsUrl: "https://www.together.ai/" },
-
-      { name: "Google Cloud Free", type: "cloud", amount: "$300 + free tier", desc: "Bisa dipakai untuk Vertex AI / Gemini.", steps: ["Buka cloud.google.com/free", "Buat akun billing (kartu untuk verifikasi)", "Klaim $300 credit", "Aktifkan Vertex AI"], claimUrl: "https://cloud.google.com/free", docsUrl: "https://cloud.google.com/free" },
-      { name: "Microsoft Azure Free", type: "cloud", amount: "$200 free credit", desc: "Bisa dipakai Azure OpenAI Service.", steps: ["Buka azure.microsoft.com/free", "Buat akun Microsoft", "Verifikasi kartu", "Aktifkan Azure OpenAI"], claimUrl: "https://azure.microsoft.com/free/", docsUrl: "https://azure.microsoft.com/free/" },
-      { name: "AWS Free Tier + Activate", type: "cloud", amount: "Free tier + kredit startup", desc: "Free tier + AWS Activate untuk startup.", steps: ["Buka aws.amazon.com/free", "Buat akun", "Untuk Activate: apply dengan startup", "Terima credits"], claimUrl: "https://aws.amazon.com/free/", docsUrl: "https://aws.amazon.com/activate/" },
-      { name: "Databricks for Startups", type: "cloud", amount: "Hingga $200K", desc: "Kredit Databricks + Neon Postgres.", steps: ["Buka databricks.com/product/startups", "Apply", "Lengkapi data funding", "Terima credits"], claimUrl: "https://www.databricks.com/product/startups", docsUrl: "https://www.databricks.com/product/startups" },
-
-      { name: "Deepgram", type: "speech", amount: "Free tier + Startup hingga $100K", desc: "Speech-to-Text & Voice AI. Program startup sangat generus.", steps: ["Buka deepgram.com", "Sign up", "Ambil free API key", "Untuk startup: apply program besar"], claimUrl: "https://deepgram.com/", docsUrl: "https://developers.deepgram.com/" },
-      { name: "AssemblyAI", type: "speech", amount: "Free tier + Startup credits", desc: "Speech-to-text + diarization + sentiment.", steps: ["Buka assemblyai.com", "Sign up", "Ambil free key", "Apply startup jika eligible"], claimUrl: "https://www.assemblyai.com/", docsUrl: "https://www.assemblyai.com/docs" },
-      { name: "ElevenLabs", type: "speech", amount: "Free tier bulanan", desc: "Text-to-Speech realistis. Free characters tiap bulan.", steps: ["Buka elevenlabs.io", "Sign up", "Cek free quota", "Buat API key di Profile"], claimUrl: "https://elevenlabs.io/", docsUrl: "https://elevenlabs.io/docs" },
-
-      { name: "Pollinations.ai", type: "image", amount: "Free (sebagian no-key)", desc: "Image generation gratis, ada endpoint tanpa API key.", steps: ["Buka pollinations.ai", "Coba langsung di browser atau endpoint", "Untuk advanced: daftar jika ada", "Pakai URL image generation"], claimUrl: "https://pollinations.ai/", docsUrl: "https://pollinations.ai/" },
-      { name: "Leonardo.ai", type: "image", amount: "Free daily tokens", desc: "Image generation dengan free daily credits.", steps: ["Buka leonardo.ai", "Sign up", "Cek daily tokens", "Generate atau pakai API"], claimUrl: "https://leonardo.ai/", docsUrl: "https://docs.leonardo.ai/" },
-      { name: "Runway", type: "image", amount: "Free credits + Startup", desc: "Video & image generation.", steps: ["Buka runwayml.com", "Sign up", "Ambil free credits", "Apply startup program jika perlu"], claimUrl: "https://runwayml.com/", docsUrl: "https://docs.runwayml.com/" },
-      { name: "Stability AI", type: "image", amount: "Free credits daftar", desc: "Stable Diffusion API. Free credits di awal.", steps: ["Buka platform.stability.ai", "Sign up", "Ambil free credits", "Buat API key"], claimUrl: "https://platform.stability.ai/", docsUrl: "https://platform.stability.ai/docs" },
-
-      { name: "Ideople Perks", type: "credit", amount: "Kumpulan $1jt+ credits", desc: "Agregator perks founder. Banyak free credits AI & SaaS.", steps: ["Buka ideople.com/perks", "Daftar sebagai founder", "Browse deals", "Klaim satu per satu"], claimUrl: "https://ideople.com/perks", docsUrl: "https://ideople.com/perks" },
-      { name: "AI Free Pool", type: "credit", amount: "Kumpulan campaign China + global", desc: "Platform yang mengumpulkan campaign free AI credits.", steps: ["Buka aifreepool.com", "Browse campaign aktif", "Klik Go to Campaign", "Ikuti instruksi masing-masing"], claimUrl: "https://aifreepool.com/", docsUrl: "https://aifreepool.com/" },
-      { name: "Credit for Startups", type: "credit", amount: "Direktori startup credits", desc: "Direktori program free credits untuk startup.", steps: ["Buka creditforstartups.com", "Filter AI / kategori", "Buka program", "Apply sesuai syarat"], claimUrl: "https://creditforstartups.com/", docsUrl: "https://creditforstartups.com/" },
-
-      { name: "xAI (Grok)", type: "api", amount: "Limited free credits / data-sharing", desc: "Grok models dari xAI. Kadang ada free credits atau program data-sharing.", steps: ["Buka console.x.ai atau x.ai", "Daftar / login dengan akun X", "Cek API access & credits", "Buat API key jika tersedia"], claimUrl: "https://x.ai/api", docsUrl: "https://docs.x.ai/" },
-      { name: "SambaNova", type: "trial", amount: "Free credits / free access", desc: "Fast inference untuk open models (DeepSeek, Llama, Qwen). Sering ada free tier.", steps: ["Buka sambanova.ai atau cloud.sambanova.ai", "Sign up", "Ambil free credits / key", "Pakai OpenAI-compatible endpoint"], claimUrl: "https://cloud.sambanova.ai/", docsUrl: "https://docs.sambanova.ai/" },
-      { name: "Perplexity API", type: "trial", amount: "Free tier terbatas", desc: "API untuk search + LLM. Ada free quota untuk developer.", steps: ["Buka perplexity.ai", "Masuk ke API / Settings", "Generate API key", "Cek rate limit free"], claimUrl: "https://www.perplexity.ai/", docsUrl: "https://docs.perplexity.ai/" },
-      { name: "Baichuan AI", type: "china", amount: "Free trial tokens", desc: "Model Baichuan dari China. Ada free quota untuk developer.", steps: ["Buka platform.baichuan-ai.com", "Daftar akun", "Buat API Key", "Cek free quota"], claimUrl: "https://platform.baichuan-ai.com/", docsUrl: "https://platform.baichuan-ai.com/" },
-      { name: "01.AI (Yi)", type: "china", amount: "Free trial / credits", desc: "Model Yi series. Ada free access untuk testing.", steps: ["Buka platform.01.ai", "Daftar", "Buat API key", "Cek free credits"], claimUrl: "https://platform.01.ai/", docsUrl: "https://platform.01.ai/" },
-      { name: "SenseTime / SenseNova", type: "china", amount: "Free trial", desc: "Model SenseNova multimodal dari SenseTime.", steps: ["Buka sensenova.cn atau platform terkait", "Daftar", "Ajukan free trial", "Ambil API key"], claimUrl: "https://www.sensetime.com/", docsUrl: "https://www.sensetime.com/" },
-      { name: "Infermatic / other open inference", type: "trial", amount: "Free tier bervariasi", desc: "Beberapa platform inference open-weight yang kasih free daily quota.", steps: ["Cari provider di OpenRouter atau freellm.net", "Daftar ke masing-masing", "Ambil free key", "Monitor rate limit"], claimUrl: "https://openrouter.ai/", docsUrl: "https://openrouter.ai/docs" },
-      { name: "LLM7 / anonymous free", type: "api", amount: "Anonymous / no key options", desc: "Beberapa endpoint anonymous atau sangat mudah dapat free key untuk model open.", steps: ["Cek LLM7 atau sejenis", "Coba endpoint tanpa key jika ada", "Atau daftar cepat", "Pakai untuk testing ringan"], claimUrl: "https://llm7.io/", docsUrl: "https://llm7.io/" },
-      { name: "Kilo Code / free routes", type: "api", amount: "Free routes / anonymous", desc: "Beberapa free routes model (termasuk via aggregator).", steps: ["Cek di OpenRouter atau situs Kilo", "Pilih model :free", "Pakai key OpenRouter atau key mereka", "Perhatikan limit harian"], claimUrl: "https://openrouter.ai/", docsUrl: "https://openrouter.ai/docs" },
-      { name: "OVHcloud AI Endpoints", type: "api", amount: "Anonymous + free tier", desc: "Akses model open-weight, ada opsi anonymous rendah RPM.", steps: ["Buka endpoints.ai.cloud.ovh.net", "Coba anonymous dulu", "Atau daftar untuk limit lebih tinggi", "Ambil token"], claimUrl: "https://endpoints.ai.cloud.ovh.net/", docsUrl: "https://endpoints.ai.cloud.ovh.net/" },
-      { name: "GitHub Student Pack (bonus)", type: "credit", amount: "Berbagai free credits student", desc: "Kalau punya Student Pack, banyak AI & cloud yang kasih extra credits.", steps: ["Buka education.github.com/pack", "Verifikasi status student", "Aktifkan benefits", "Klaim di masing-masing partner"], claimUrl: "https://education.github.com/pack", docsUrl: "https://education.github.com/pack" },
-      { name: "Anthropic Claude (trial)", type: "trial", amount: "One-time ~$5 trial credit", desc: "Claude API biasanya kasih trial kecil saat daftar (bisa berubah).", steps: ["Buka console.anthropic.com", "Sign up", "Verifikasi jika diminta", "Cek free credit di billing"], claimUrl: "https://console.anthropic.com/", docsUrl: "https://docs.anthropic.com/" },
-      { name: "OpenAI API (limited free)", type: "trial", amount: "Limited / data-sharing tokens", desc: "Tidak ada permanent free tier, tapi kadang ada free tokens lewat data-sharing atau trial kecil.", steps: ["Buka platform.openai.com", "Buat akun", "Cek Settings → Data controls / Billing", "Aktifkan data sharing jika ingin free tokens"], claimUrl: "https://platform.openai.com/", docsUrl: "https://platform.openai.com/docs" },
-
-
-      { name: "api.hcnsec.cn (幻城网安公益)", type: "china", amount: "Free / unlimited (claim)", desc: "公益 NewAPI relay. Agregasi GPT, Claude, Gemini, DeepSeek, Qwen, GLM, Kimi dll. OpenAI-compatible. Risiko menengah (bisa tutup sewaktu-waktu).", steps: ["Buka https://api.hcnsec.cn", "Daftar akun", "Ambil free token / API key di dashboard", "Pakai base URL mereka + key (OpenAI format)", "Jangan untuk production penting"], claimUrl: "https://api.hcnsec.cn", docsUrl: "https://api.hcnsec.cn" },
-      { name: "FreeModel (api.freemodel.dev)", type: "trial", amount: "Free credits saat daftar", desc: "OpenAI-compatible gateway ke model frontier (GPT-family + Claude-family). Free credits, no card.", steps: ["Buka freemodel.dev atau api.freemodel.dev", "Sign up (no credit card)", "Verifikasi & ambil free credits", "Buat API key", "Ganti base_url ke mereka"], claimUrl: "https://freemodel.dev", docsUrl: "https://freemodel.dev" },
-      { name: "Sk-Free Directory", type: "credit", amount: "Direktori 20+ free relay", desc: "Navigasi situs free AI API 中转 / 公益站. Banyak yang kasih free quota + daily check-in.", steps: ["Buka sk-free.com", "Lihat daftar situs yang masih hidup", "Pilih yang recommended / normal", "Daftar di masing-masing & klaim free"], claimUrl: "https://sk-free.com/", docsUrl: "https://sk-free.com/" },
-      { name: "52公益站 (free.9e.nz)", type: "china", amount: "Free relay (terbatas)", desc: "API converter / relay berbasis NewAPI. Akses multi model lewat satu key.", steps: ["Buka free.9e.nz", "Daftar", "Ambil API key", "Cek model & quota yang tersedia", "Hati-hati: situs 公益 bisa hilang"], claimUrl: "https://free.9e.nz", docsUrl: "https://free.9e.nz" },
-      { name: "FreeAIRouter", type: "credit", amount: "Radar free model & relay", desc: "Situs yang melacak free model + 公益/中转站 beserta risiko & free quota.", steps: ["Buka freeairouter.com", "Browse daftar free / 公益站", "Cek skor risiko & free models", "Kunjungi yang status Available"], claimUrl: "https://www.freeairouter.com/", docsUrl: "https://www.freeairouter.com/" },
-      { name: "CometAPI", type: "trial", amount: "$3 free credits signup", desc: "500+ AI models satu API key (OpenAI-compatible). Free $3 credit, no card.", steps: ["Buka cometapi.com atau situs resmi", "Sign up free", "Ambil $3 credits", "Buat API key", "Pakai base_url mereka"], claimUrl: "https://www.cometapi.com/", docsUrl: "https://www.cometapi.com/" },
-      { name: "free-llm.cups.moe", type: "china", amount: "Free quota (login)", desc: "公益 LLM API (DeepSeek, ChatGPT, Gemini, Claude, Qwen, Kimi, GLM). Login kasih quota.", steps: ["Buka free-llm.cups.moe", "Login via Linux.do / GitHub", "Dapat free quota", "Buat key & pakai", "Bisa request tambah quota jika habis"], claimUrl: "https://free-llm.cups.moe", docsUrl: "https://free-llm.cups.moe" },
-
-
-      { name: "aicredits.dev", type: "credit", amount: "194+ free AI & cloud credits", desc: "Direktori community free AI credits, cloud programs, GPU grants. Mirip bansos style.", steps: ["Buka aicredits.dev", "Browse / search credits", "Baca eligibility & catch", "Klaim di link resmi masing-masing"], claimUrl: "https://aicredits.dev/", docsUrl: "https://aicredits.dev/" },
-      { name: "AppVerse Bansos AI", type: "credit", amount: "Kumpulan bansos AI Indo", desc: "Komunitas Indo yang mengumpulkan bansos AI / free credits (FreeModel, MiMo, NaraRouter, dll).", steps: ["Buka appverse.id/bansos-ai", "Lihat list bansos aktif", "Ikuti tutorial claim di post", "Cek status sebelum klaim"], claimUrl: "https://appverse.id/bansos-ai", docsUrl: "https://appverse.id/bansos-ai" },
-      { name: "TokenRouter Free Credits", type: "trial", amount: "Bonus top-up / developer credits", desc: "Sering ada campaign bonus credit & developer credits (contoh 40% bonus).", steps: ["Buka tokenrouter / campaign page", "Login", "Ikuti syarat top-up atau form developer", "Klaim sebelum deadline"], claimUrl: "https://bansos.dev/", docsUrl: "https://bansos.dev/" },
-      { name: "bansos.dev", type: "credit", amount: "Kumpulan bansos AI", desc: "Situs yang mengumpulkan free credits & campaign AI (TokenRouter dll). Style bansos Indo.", steps: ["Buka bansos.dev", "Browse list bansos aktif", "Baca step-by-step claim", "Klaim di provider resmi"], claimUrl: "https://bansos.dev/", docsUrl: "https://bansos.dev/" },
-      { name: "AIFreePlan", type: "credit", amount: "45+ platform free credits", desc: "Directory free tiers, trial credits, usage limits across major AI platforms.", steps: ["Buka aifreeplan.com", "Browse kategori (LLM, Image, dll)", "Baca guide claim", "Ikuti link resmi"], claimUrl: "https://aifreeplan.com/", docsUrl: "https://aifreeplan.com/" },
-      { name: "NaraRouter (bansos style)", type: "trial", amount: "Sering ada free token harian", desc: "Beberapa campaign kasih free token harian (reload). Cek komunitas bansos untuk status terbaru.", steps: ["Cek di bansos.dev / AppVerse", "Cari NaraRouter campaign aktif", "Daftar & klaim sesuai tutorial", "Monitor limit harian"], claimUrl: "https://bansos.dev/", docsUrl: "https://bansos.dev/" },
-      { name: "QuadCode AI / similar", type: "trial", amount: "Free credits campaign", desc: "Kadang ada campaign free credit (Claude, GPT, Gemini, Grok, DeepSeek, GLM, Kimi, Qwen).", steps: ["Cek list bansos di AppVerse / bansos.dev", "Cari QuadCode atau sejenis", "Ikuti step claim", "Pakai API key yang didapat"], claimUrl: "https://appverse.id/bansos-ai", docsUrl: "https://appverse.id/bansos-ai" },
-
-      { name: "GetAITools Free Tier Tracker", type: "credit", amount: "Tracker free tier AI", desc: "Melacak free tier AI tools & API secara berkala.", steps: ["Buka getaitools.dev", "Lihat tabel free tier", "Klik provider yang diinginkan", "Ikuti link klaim"], claimUrl: "https://getaitools.dev/", docsUrl: "https://getaitools.dev/" }
-    ];
-
-    const grid = document.getElementById('grid');
-    const searchInput = document.getElementById('search');
-    const totalEl = document.getElementById('total');
-    const shownEl = document.getElementById('shown');
-    let currentFilter = 'all';
-
-    function getTypeLabel(type) {
-      const map = { api: 'Free API', china: 'China', credit: 'Agregator', trial: 'Free Trial', startup: 'Startup', cloud: 'Cloud', speech: 'Speech', image: 'Image/Video' };
-      return map[type] || type;
-    }
-    function getTypeClass(type) { return `type-${type}`; }
-
-    function render(list) {
-      totalEl.textContent = data.length;
-      shownEl.textContent = list.length;
-      if (list.length === 0) {
-        grid.innerHTML = `<div class="empty"><p style="font-size:1.15rem;margin-bottom:6px;">Tidak ada hasil</p><p>Coba kata kunci atau filter lain</p></div>`;
-        return;
-      }
-      grid.innerHTML = list.map(item => `
-        <article class="card">
-          <div class="card-header">
-            <h2 class="card-title">${item.name}</h2>
-            <span class="type-badge ${getTypeClass(item.type)}">${getTypeLabel(item.type)}</span>
-          </div>
-          <div class="credit-amount">${item.amount}</div>
-          <p class="card-desc">${item.desc}</p>
-          <div class="steps">
-            <strong>Cara Klaim</strong>
-            <ol>${item.steps.map(s => `<li>${s}</li>`).join('')}</ol>
-          </div>
-          <div class="card-footer">
-            <a href="${item.claimUrl}" target="_blank" rel="noopener" class="btn btn-primary">Klaim Sekarang</a>
-            <a href="${item.docsUrl}" target="_blank" rel="noopener" class="btn btn-secondary">Docs</a>
-          </div>
-        </article>
-      `).join('');
-    }
-
-    function apply() {
-      const q = searchInput.value.trim().toLowerCase();
-      let result = data;
-      if (currentFilter !== 'all') result = result.filter(item => item.type === currentFilter);
-      if (q) result = result.filter(item => (`${item.name} ${item.desc} ${item.amount} ${item.type}`).toLowerCase().includes(q));
-      render(result);
-    }
-
-    searchInput.addEventListener('input', apply);
-    document.getElementById('filters').addEventListener('click', (e) => {
-      if (!e.target.classList.contains('filter-btn')) return;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      currentFilter = e.target.dataset.filter;
-      apply();
-    });
-
-    render(data);
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
