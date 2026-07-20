@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Claude Clone — Custom AI Chat</title>
+  <title>DailyFlo — AI Chat</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/core.min.js"></script>
@@ -50,7 +50,7 @@
         </button>
         <div class="header-title">
           <span class="logo">✦</span>
-          <span id="current-chat-title">Claude Clone</span>
+          <span id="current-chat-title">DailyFlo</span>
         </div>
         <div class="header-actions">
           <button id="btn-theme" class="btn-icon" title="Ganti tema">
@@ -65,11 +65,11 @@
       <div id="messages" class="messages">
         <div id="welcome" class="welcome">
           <div class="welcome-icon">✦</div>
-          <h1>Selamat datang di Claude Clone</h1>
-          <p>Chat AI dengan base URL &amp; API key milikmu sendiri.<br>Mirip Claude, 100% berjalan di browser, siap deploy ke GitHub Pages.</p>
+          <h1>Selamat datang di DailyFlo</h1>
+          <p>Asisten AI pribadi dengan Base URL &amp; API Key milikmu sendiri.<br>100% berjalan di browser, siap deploy ke GitHub Pages.</p>
           <div class="welcome-tips">
             <div class="tip">1. Buka <strong>Pengaturan</strong> → isi Base URL &amp; API Key</div>
-            <div class="tip">2. Pilih model (contoh: gpt-4o, claude-3-5-sonnet, llama-3.1-70b)</div>
+            <div class="tip">2. Pilih model (contoh: gpt-4o, llama-3.1-70b, dll)</div>
             <div class="tip">3. Mulai mengobrol!</div>
           </div>
         </div>
@@ -107,8 +107,11 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="base-url">Base URL</label>
-          <input type="url" id="base-url" placeholder="https://api.openai.com/v1" />
-          <small>Contoh: https://api.openai.com/v1 • https://api.groq.com/openai/v1 • https://openrouter.ai/api/v1</small>
+          <input type="url" id="base-url" placeholder="https://xxxxx.trycloudflare.com/v1" />
+          <small>
+            Untuk <strong>9Router</strong>: masukkan URL publik kamu + <code>/v1</code><br>
+            Contoh: <code>https://abc123.trycloudflare.com/v1</code>
+          </small>
         </div>
         <div class="form-group">
           <label for="api-key">API Key</label>
@@ -120,8 +123,15 @@
         </div>
         <div class="form-group">
           <label for="model-name">Model</label>
-          <input type="text" id="model-name" placeholder="gpt-4o" />
-          <small>Contoh: gpt-4o, claude-3-5-sonnet-20241022, llama-3.1-70b-versatile, gemini-2.0-flash</small>
+          <div class="model-row">
+            <select id="model-name">
+              <option value="">— Pilih model —</option>
+            </select>
+            <button type="button" id="btn-fetch-models" class="btn-fetch" title="Ambil daftar model dari API">
+              ↻ Ambil Model
+            </button>
+          </div>
+          <small id="model-status">Klik "Ambil Model" untuk auto-discovery dari 9Router / API kamu</small>
         </div>
         <div class="form-group">
           <label for="system-prompt">System Prompt</label>

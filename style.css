@@ -766,6 +766,55 @@ html, body {
   border-color: var(--accent);
 }
 
+/* Model row */
+.model-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.model-row select {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+.model-row select:focus {
+  border-color: var(--accent);
+}
+
+.btn-fetch {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.btn-fetch:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.btn-fetch:disabled,
+.btn-fetch.loading {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

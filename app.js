@@ -73,10 +73,12 @@ const els = {
   btnTheme: $('#btn-theme'),
   btnToggleSidebar: $('#btn-toggle-sidebar'),
   btnToggleKey: $('#btn-toggle-key'),
+  btnFetchModels: $('#btn-fetch-models'),
   settingsModal: $('#settings-modal'),
   baseUrl: $('#base-url'),
   apiKey: $('#api-key'),
   modelName: $('#model-name'),
+  modelStatus: $('#model-status'),
   systemPrompt: $('#system-prompt'),
   streamEnabled: $('#stream-enabled'),
   modelBadge: $('#model-badge'),
@@ -104,7 +106,7 @@ function init() {
 // ========== STORAGE ==========
 function loadState() {
   try {
-    const saved = localStorage.getItem('claude-clone-state');
+    const saved = localStorage.getItem('dailyflo-state');
     if (saved) {
       const data = JSON.parse(saved);
       state.settings = { ...state.settings, ...data.settings };
@@ -119,14 +121,19 @@ function loadState() {
   // Populate form
   els.baseUrl.value = state.settings.baseUrl || '';
   els.apiKey.value = state.settings.apiKey || '';
-  els.modelName.value = state.settings.model || '';
   els.systemPrompt.value = state.settings.systemPrompt || '';
   els.streamEnabled.checked = state.settings.stream !== false;
+
+  // Restore model (add option if not exists yet)
+  if (state.settings.model) {
+    ensureModelOption(state.settings.model);
+    els.modelName.value = state.settings.model;
+  }
 }
 
 function saveState() {
   try {
-    localStorage.setItem('claude-clone-state', JSON.stringify({
+    localStorage.setItem('dailyflo-state', JSON.stringify({
       settings: state.settings,
       chats: state.chats,
       currentChatId: state.currentChatId,
@@ -233,7 +240,7 @@ function renderMessages() {
 
   if (!chat || chat.messages.length === 0) {
     els.messages.appendChild(els.welcome);
-    els.currentChatTitle.textContent = 'Claude Clone';
+    els.currentChatTitle.textContent = 'DailyFlo';
     return;
   }
 
@@ -443,10 +450,30 @@ async function sendMessage() {
     renderMessages();
   } catch (err) {
     console.error(err);
-    assistantMsg.content = `⚠️ **Error:** ${err.message}`;
+    let errorMessage = err.message || 'Unknown error';
+
+    // Deteksi error CORS (paling sering terjadi di GitHub Pages)
+    if (
+      errorMessage.includes('Failed to fetch') ||
+      errorMessage.includes('NetworkError') ||
+      errorMessage.includes('CORS') ||
+      errorMessage.includes('blocked by CORS') ||
+      err.name === 'TypeError'
+    ) {
+      errorMessage = `**CORS Error** — API menolak dipanggil dari browser (GitHub Pages).
+
+**Penyebab:** Hampir semua provider AI (OpenAI, Groq, OpenRouter, dll) memblokir request langsung dari frontend karena keamanan.
+
+**Solusi yang disarankan:**
+1. Gunakan **Cloudflare Workers** sebagai proxy (gratis & mudah) — lihat petunjuk di README
+2. Atau matikan streaming dulu dan coba lagi
+3. Pastikan Base URL sudah benar (contoh: \`https://api.groq.com/openai/v1\`)`;
+    }
+
+    assistantMsg.content = `⚠️ **Error:** ${errorMessage}`;
     saveState();
     renderMessages();
-    showToast('Gagal memanggil API');
+    showToast('Gagal memanggil API — cek error di atas');
   } finally {
     state.isGenerating = false;
     els.btnSend.disabled = !els.userInput.value.trim();
@@ -461,9 +488,13 @@ function openSettings() {
   els.settingsModal.classList.remove('hidden');
   els.baseUrl.value = state.settings.baseUrl || '';
   els.apiKey.value = state.settings.apiKey || '';
-  els.modelName.value = state.settings.model || '';
   els.systemPrompt.value = state.settings.systemPrompt || '';
   els.streamEnabled.checked = state.settings.stream !== false;
+
+  if (state.settings.model) {
+    ensureModelOption(state.settings.model);
+    els.modelName.value = state.settings.model;
+  }
 }
 
 function closeSettings() {
@@ -482,6 +513,99 @@ function saveSettings() {
   showToast('Pengaturan disimpan!');
 }
 
+// ========== MODEL AUTO DISCOVERY ==========
+function ensureModelOption(modelId) {
+  if (!modelId) return;
+  const exists = Array.from(els.modelName.options).some(o => o.value === modelId);
+  if (!exists) {
+    const opt = document.createElement('option');
+    opt.value = modelId;
+    opt.textContent = modelId;
+    els.modelName.appendChild(opt);
+  }
+}
+
+async function fetchModels() {
+  const baseUrl = els.baseUrl.value.trim();
+  const apiKey = els.apiKey.value.trim();
+
+  if (!baseUrl) {
+    showToast('Isi Base URL dulu!');
+    return;
+  }
+
+  els.btnFetchModels.classList.add('loading');
+  els.btnFetchModels.disabled = true;
+  els.modelStatus.textContent = 'Sedang mengambil daftar model...';
+
+  try {
+    const url = baseUrl.replace(/\/+$/, '') + '/models';
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errText.slice(0, 120)}`);
+    }
+
+    const data = await response.json();
+    const models = data.data || data.models || [];
+
+    if (!Array.isArray(models) || models.length === 0) {
+      throw new Error('Tidak ada model yang ditemukan');
+    }
+
+    // Simpan model yang sedang dipilih
+    const currentSelected = els.modelName.value || state.settings.model;
+
+    // Clear & rebuild options
+    els.modelName.innerHTML = '<option value="">— Pilih model —</option>';
+
+    // Sort by id
+    models
+      .map(m => (typeof m === 'string' ? m : m.id))
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b))
+      .forEach(id => {
+        const opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = id;
+        els.modelName.appendChild(opt);
+      });
+
+    // Restore selection if possible
+    if (currentSelected) {
+      ensureModelOption(currentSelected);
+      els.modelName.value = currentSelected;
+    }
+
+    els.modelStatus.textContent = `✅ ${models.length} model ditemukan`;
+    showToast(`${models.length} model berhasil diambil!`);
+  } catch (err) {
+    console.error(err);
+    let msg = err.message || 'Gagal mengambil model';
+
+    if (msg.includes('Failed to fetch') || err.name === 'TypeError') {
+      msg = 'CORS / Network error — pastikan 9Router sudah expose URL publik dan mengizinkan CORS';
+    }
+
+    els.modelStatus.textContent = `⚠️ ${msg}`;
+    showToast('Gagal mengambil model');
+  } finally {
+    els.btnFetchModels.classList.remove('loading');
+    els.btnFetchModels.disabled = false;
+  }
+}
+
 // ========== EVENTS ==========
 function bindEvents() {
   els.btnNewChat.addEventListener('click', createNewChat);
@@ -496,6 +620,8 @@ function bindEvents() {
     const input = els.apiKey;
     input.type = input.type === 'password' ? 'text' : 'password';
   });
+
+  els.btnFetchModels.addEventListener('click', fetchModels);
 
   els.btnSend.addEventListener('click', sendMessage);
 
