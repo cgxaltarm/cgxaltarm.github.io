@@ -1,5 +1,16 @@
 {
-  "name": "webusage",
-  "version": "0.1.0",
-  "private": true
+  "name": "9router-usage-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "type": "module",
+  "devDependencies": {
+    "vite": "^8.1.5"
+  }
 }
