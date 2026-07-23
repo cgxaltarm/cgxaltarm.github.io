@@ -1,3 +1,0 @@
-# WebUsage
-
-Local development project.
