@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>9Router Usage Dashboard</title>
-  <script type="module" crossorigin src="./assets/index-BqhbGe5p.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B2oLp3zW.css">
+DailyFlo | 9Router Usage
+  <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
   <header>
     <div>
-      <h1>9Router Usage Dashboard</h1>
-      <div class="subtitle">Secure, local-first API key monitoring</div>
+      <h1>DailyFlo</h1>
+      <div class="subtitle">9Router Usage Checker</div>
     </div>
     <div id="key-status-container" class="hidden">
       <div class="status-badge">
@@ -26,12 +25,8 @@
       <label for="api-key-input">Enter your 9Router API Key</label>
       <div class="input-row">
         <input type="password" id="api-key-input" placeholder="sk-..." autocomplete="off">
-        <button id="load-btn">Load Usage</button>
+        <button id="load-btn">Check Usage</button>
       </div>
-    </div>
-    <div class="form-group form-group-last">
-      <label for="backend-url-input">API Helper URL</label>
-      <input type="text" id="backend-url-input" value="http://127.0.0.1:20129">
     </div>
   </div>
 
@@ -87,8 +82,9 @@
   </div>
 
   <div class="footer">
-    9Router Usage Helper runs locally at 127.0.0.1. Stored keys never leave memory.
+    Data provided by 9Router API. Stored keys never leave memory.
   </div>
-
+
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,439 @@
+:root {
+  color-scheme: dark;
+  --bg-color: #0d0d0d;
+  --surface-color: #1a1a19;
+  --border-color: rgba(255, 255, 255, 0.10);
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+
+  /* Dataviz default categorical Slot 1 (Blue for dark mode) */
+  --series-1: #3987e5;
+  --series-1-hover: #5598e7;
+
+  /* Status Palette */
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
+
+  /* Grid and axis ink */
+  --chart-grid: #2c2c2a;
+  --chart-axis: #383835;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  padding: 2rem 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+h1 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+label {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+input[type="password"], input[type="text"], select {
+  flex: 1;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.625rem 0.875rem;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+
+input[type="password"]:focus, input[type="text"]:focus, select:focus {
+  outline: none;
+  border-color: var(--series-1);
+}
+
+button {
+  background-color: var(--series-1);
+  color: #ffffff;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background-color 0.15s ease;
+}
+
+button:hover {
+  background-color: var(--series-1-hover);
+}
+
+button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+button.secondary:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.form-group-last {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.form-error {
+  color: var(--status-critical);
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+}
+
+.tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.progress-card {
+  margin-bottom: 1.5rem;
+}
+
+.progress-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.progress-heading h2 {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.progress-heading p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.125rem;
+}
+
+#progress-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: var(--chart-grid);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: var(--series-1);
+  border-radius: 4px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.section-description {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+  transform: translate(-50%, -100%);
+}
+
+.tooltip-date {
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tooltip-key {
+  width: 12px;
+  height: 2px;
+  background-color: var(--series-1);
+}
+
+.tooltip-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip-label {
+  color: var(--text-muted);
+}
+
+.tile {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.tile-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.tile-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tile-subtext {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.375rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Dataviz Marks and Anatomy spacing requirements */
+.chart-container {
+  position: relative;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.toolbar-actions select {
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  width: auto;
+}
+
+.toolbar-actions button {
+  padding: 0.5rem 1rem;
+}
+
+.chart-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.chart-scroll svg {
+  display: block;
+  width: 100%;
+  min-width: 640px;
+  height: 320px;
+}
+
+/* Axis and grid line specifications */
+.chart-grid {
+  stroke: var(--chart-grid);
+  stroke-width: 1px;
+}
+
+.chart-axis {
+  stroke: var(--chart-axis);
+  stroke-width: 1px;
+}
+
+.chart-axis-label {
+  fill: var(--text-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bar specs (≤ 24px width, 4px rounded top, square at baseline) */
+.chart-bar {
+  fill: var(--series-1);
+  transition: fill 0.15s ease;
+}
+
+.bar-group:hover .chart-bar,
+.bar-group:focus .chart-bar {
+  fill: var(--series-1-hover);
+  outline: none;
+}
+
+.empty-state {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 3rem 0;
+  font-size: 0.875rem;
+}
+
+/* Accessible details data table */
+.chart-table {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.25rem;
+}
+
+.chart-table summary {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.chart-table summary:hover {
+  color: var(--text-primary);
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+th, td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  color: var(--text-primary);
+}
+
+td:nth-child(n+2), th:nth-child(n+2) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--text-muted);
+}
+
+.status-dot.active {
+  background-color: var(--status-good);
+}
