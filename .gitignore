@@ -22,3 +22,13 @@ Thumbs.db
 .idea/
 .claude/settings.local.json
 .claude/worktrees/
+
+# Claude safe automation additions
+node_modules/
+coverage/
+dist/
+build/
+.next/
+.nuxt/
+.turbo/
+.cache/
