@@ -21,9 +21,7 @@
         <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
         <span><strong>DailyFlo</strong><small>usage monitor</small></span>
       </a>
-      <a class="button button-secondary" href="https://api.dailyflo.me/dashboard/usage" target="_blank" rel="noreferrer">
-        Buka layar penuh
-      </a>
+      <span class="status">Live · baca saja</span>
     </header>
 
     <main class="embed-main">
@@ -32,15 +30,35 @@
           <p class="eyebrow">LIVE · USD + TOKEN</p>
           <h1>Pemakaian model DailyFlo</h1>
         </div>
-        <p>Dashboard asli disematkan langsung. Login dan data tetap berada di <strong>api.dailyflo.me</strong>.</p>
+        <p>Hanya ringkasan, grafik, dan tabel model yang ditampilkan. Navigasi serta pengaturan dinonaktifkan.</p>
       </div>
 
-      <iframe
-        class="usage-frame"
-        src="https://api.dailyflo.me/dashboard/usage"
-        title="Pemakaian token dan biaya DailyFlo"
-        loading="eager"
-      ></iframe>
+      <section class="usage-panels" aria-label="Statistik penggunaan DailyFlo">
+        <div class="usage-crop usage-summary">
+          <iframe
+            src="https://api.dailyflo.me/dashboard/usage"
+            title="Ringkasan penggunaan DailyFlo"
+            sandbox="allow-scripts allow-same-origin"
+            tabindex="-1"
+          ></iframe>
+        </div>
+        <div class="usage-crop usage-chart">
+          <iframe
+            src="https://api.dailyflo.me/dashboard/usage"
+            title="Grafik penggunaan DailyFlo"
+            sandbox="allow-scripts allow-same-origin"
+            tabindex="-1"
+          ></iframe>
+        </div>
+        <div class="usage-crop usage-models">
+          <iframe
+            src="https://api.dailyflo.me/dashboard/usage"
+            title="Tabel penggunaan per model DailyFlo"
+            sandbox="allow-scripts allow-same-origin"
+            tabindex="-1"
+          ></iframe>
+        </div>
+      </section>
     </main>
   </body>
 </html>

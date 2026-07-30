@@ -15,7 +15,6 @@
 body {
   min-height: 100vh;
   margin: 0;
-  overflow: hidden;
   background:
     radial-gradient(circle at 76% -10%, rgb(255 107 53 / 14%), transparent 34rem),
     var(--canvas);
@@ -70,20 +69,17 @@ a:focus-visible { outline: 2px solid var(--signal-soft); outline-offset: 3px; }
 .brand-mark span:nth-child(2) { height: 14px; }
 .brand-mark span:nth-child(3) { height: 10px; opacity: 0.8; }
 
-.button {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 15px;
+.status {
+  padding: 10px 15px;
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
+  border-radius: 999px;
   background: var(--panel);
+  color: var(--muted);
   font-size: 12px;
   font-weight: 700;
-  text-decoration: none;
 }
 
-.embed-main { height: calc(100vh - 70px); padding: 18px 20px 20px; }
+.embed-main { padding: 18px 20px 40px; }
 .embed-title {
   display: flex;
   align-items: end;
@@ -110,21 +106,42 @@ h1 { margin: 0; font-size: clamp(24px, 3vw, 38px); letter-spacing: -0.04em; }
   text-align: right;
 }
 
-.usage-frame {
-  display: block;
+.usage-panels {
+  display: grid;
+  gap: 18px;
   width: min(1440px, 100%);
-  height: calc(100% - 70px);
-  min-height: 480px;
   margin: 0 auto;
+}
+
+.usage-crop {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--line-strong);
   border-radius: 16px;
   background: var(--panel);
 }
 
+.usage-crop iframe {
+  position: absolute;
+  left: -288px;
+  width: 1708px;
+  height: 1800px;
+  border: 0;
+  pointer-events: none;
+}
+
+.usage-summary { height: 310px; }
+.usage-summary iframe { top: 0; }
+.usage-chart { height: 306px; }
+.usage-chart iframe { top: -809px; }
+.usage-models { height: 640px; }
+.usage-models iframe { top: -1137px; }
+
 @media (max-width: 660px) {
   .embed-header { height: 62px; padding: 0 12px; }
-  .embed-header .button { min-height: 36px; padding: 0 11px; font-size: 11px; }
-  .embed-main { height: calc(100vh - 62px); padding: 12px; }
+  .status { padding: 8px 11px; font-size: 11px; }
+  .embed-main { padding: 12px 12px 28px; }
   .embed-title > p { display: none; }
-  .usage-frame { height: calc(100% - 62px); min-height: 420px; border-radius: 12px; }
+  .usage-panels { overflow-x: auto; }
+  .usage-crop { width: 1418px; border-radius: 12px; }
 }
