@@ -127,7 +127,6 @@ h1 { margin: 0; font-size: clamp(24px, 3vw, 38px); letter-spacing: -0.04em; }
   width: 1708px;
   height: 1800px;
   border: 0;
-  pointer-events: none;
 }
 
 .usage-summary { height: 310px; }

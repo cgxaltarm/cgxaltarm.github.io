@@ -12,14 +12,12 @@ test('builds the DailyFlo usage monitor for the active domain', async () => {
   assert.match(html, /https:\/\/dailyflo\.me\/og\.png/);
 });
 
-test('shows only three sandboxed non-interactive usage crops', async () => {
+test('shows only three sandboxed usage crops with interactive buttons', async () => {
   const html = await readFile(new URL('dist/index.html', root), 'utf8');
-  assert.equal((html.match(/<iframe/g) || []).length, 3);
-  assert.equal((html.match(/sandbox="allow-scripts allow-same-origin"/g) || []).length, 3);
+  assert.equal((html.match(/<iframe[^>]+sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"/g) || []).length, 3);
   assert.doesNotMatch(html, /password-input|api\/auth\/login/);
 
-  const css = await readFile(new URL('src/style.css', root), 'utf8');
-  assert.match(css, /\.usage-crop iframe[\s\S]*pointer-events:\s*none/);
+  // ponytail: pointer-events removed so buttons inside iframe work; add back when a read-only API exists.
 });
 
 test('keeps the custom domain in the Pages artifact', async () => {
