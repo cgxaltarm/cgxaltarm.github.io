@@ -1,298 +1,304 @@
+const API_BASE = 'https://api.dailyflo.me';
+
 const elements = {
-  credentialInput: document.querySelector('#api-key-input'),
-  loadButton: document.querySelector('#load-btn'),
-  logoutButton: document.querySelector('#logout-btn'),
-  rangeSelect: document.querySelector('#range-select'),
-  authSection: document.querySelector('#auth-section'),
-  dashboard: document.querySelector('#dashboard-content'),
-  keyStatus: document.querySelector('#key-status-container'),
-  keyName: document.querySelector('#key-name-display'),
-  rangeDisplay: document.querySelector('#range-display'),
-  cost: document.querySelector('#val-cost'),
-  averageCost: document.querySelector('#val-avg-cost-daily'),
-  requests: document.querySelector('#val-requests'),
-  successRate: document.querySelector('#val-success-rate'),
-  tokens: document.querySelector('#val-tokens'),
-  tokenSplit: document.querySelector('#val-token-split'),
-  progressValue: document.querySelector('#progress-value'),
-  progressDetail: document.querySelector('#progress-detail'),
-  progressFill: document.querySelector('#progress-fill'),
-  progressTrack: document.querySelector('.progress-track'),
-  chart: document.querySelector('#chart-parent'),
-  tooltip: document.querySelector('#chart-tooltip'),
+  connectionPill: document.querySelector('#connection-pill'),
+  connectionLabel: document.querySelector('#connection-label'),
+  periodControl: document.querySelector('#period-control'),
+  refreshSelect: document.querySelector('#refresh-select'),
+  cost: document.querySelector('#total-cost'),
+  costNote: document.querySelector('#cost-note'),
+  tokens: document.querySelector('#total-tokens'),
+  tokenNote: document.querySelector('#token-note'),
+  cached: document.querySelector('#cached-tokens'),
+  cacheNote: document.querySelector('#cache-note'),
+  connectionPanel: document.querySelector('#connection-panel'),
+  connectionSymbol: document.querySelector('#connection-symbol'),
+  connectionEyebrow: document.querySelector('#connection-eyebrow'),
+  connectionTitle: document.querySelector('#connection-title'),
+  connectionMessage: document.querySelector('#connection-message'),
+  loginForm: document.querySelector('#login-form'),
+  password: document.querySelector('#password-input'),
+  loginButton: document.querySelector('#login-button'),
+  blockedActions: document.querySelector('#blocked-actions'),
+  retryButton: document.querySelector('#retry-button'),
+  formError: document.querySelector('#form-error'),
+  setupDetails: document.querySelector('#setup-details'),
+  syncDot: document.querySelector('#sync-dot'),
+  syncNote: document.querySelector('#sync-note'),
+  staleBanner: document.querySelector('#stale-banner'),
+  staleRetry: document.querySelector('#stale-retry'),
+  tableWrap: document.querySelector('#model-table-wrap'),
+  tableBody: document.querySelector('#model-table-body'),
+  emptyState: document.querySelector('#empty-state'),
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.dailyflo.me/v1';
-
-let activeCredential = '';
-let backendUrl = API_BASE_URL;
-let dailyData = [];
-
-const numberFormatter = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
-const exactNumberFormatter = new Intl.NumberFormat('en-US');
-const currencyFormatter = new Intl.NumberFormat('en-US', {
+const integerFormatter = new Intl.NumberFormat('id-ID');
+const compactFormatter = new Intl.NumberFormat('id-ID', {
+  notation: 'compact',
+  maximumFractionDigits: 2,
+});
+const dollarFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
   minimumFractionDigits: 2,
-  maximumFractionDigits: 4,
+  maximumFractionDigits: 2,
 });
 
-const formatTokens = (value) => numberFormatter.format(Number(value ?? 0));
-const formatCurrency = (value) => currencyFormatter.format(Number(value ?? 0));
+let period = 'today';
+let refreshTimer;
+let lastStats;
 
-const dateRange = (days) => {
-  const end = new Date();
-  const start = new Date(end);
-  start.setUTCDate(end.getUTCDate() - Number(days) + 1);
+const setHidden = (element, hidden) => element.classList.toggle('hidden', hidden);
 
-  return {
-    from: start.toISOString().slice(0, 10),
-    to: end.toISOString().slice(0, 10),
-  };
-};
+const isUsageStats = (value) => value
+  && typeof value === 'object'
+  && typeof value.totalCost === 'number'
+  && typeof value.totalPromptTokens === 'number'
+  && typeof value.totalCompletionTokens === 'number'
+  && value.byModel
+  && typeof value.byModel === 'object';
 
-const formatDate = (value) => new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  timeZone: 'UTC',
-}).format(new Date(`${value}T00:00:00Z`));
+const totalTokens = (model) => model.promptTokens + model.completionTokens;
 
-const renderChart = (daily) => {
-  dailyData = daily;
-  if (!daily.length) {
-    elements.chart.innerHTML = '<p class="empty-state">No usage data is available for this period.</p>';
-    return;
-  }
+const aggregateModels = (byModel) => {
+  const grouped = new Map();
 
-  const width = 960;
-  const height = 320;
-  const padding = { top: 20, right: 24, bottom: 52, left: 64 };
-  const plotWidth = width - padding.left - padding.right;
-  const plotHeight = height - padding.top - padding.bottom;
-  const maxTokens = Math.max(...daily.map((day) => Number(day.totalTokens)), 1);
-  const roundedMax = Math.ceil(maxTokens / 1_000) * 1_000 || 1;
-  const step = plotWidth / daily.length;
-  const barWidth = Math.min(36, Math.max(10, step - 6));
-  const ticks = 4;
-  const horizontalGrid = Array.from({ length: ticks + 1 }, (_, index) => {
-    const value = (roundedMax / ticks) * index;
-    const y = padding.top + plotHeight - (value / roundedMax) * plotHeight;
-    return `<g><line class="chart-grid" x1="${padding.left}" x2="${width - padding.right}" y1="${y}" y2="${y}"/><text class="chart-axis-label" x="${padding.left - 10}" y="${y + 4}" text-anchor="end">${formatTokens(value)}</text></g>`;
-  }).join('');
+  Object.entries(byModel).forEach(([key, usage]) => {
+    const name = usage.rawModel?.trim() || key.replace(/\s\([^)]*\)$/, '');
+    const current = grouped.get(name) || {
+      name,
+      providers: [],
+      promptTokens: 0,
+      completionTokens: 0,
+      cachedTokens: 0,
+      cost: 0,
+      lastUsed: undefined,
+    };
 
-  const bars = daily.map((day, index) => {
-    const tokens = Number(day.totalTokens);
-    const barHeight = Math.max((tokens / roundedMax) * plotHeight, 1);
-    const x = padding.left + index * step + (step - barWidth) / 2;
-    const y = padding.top + plotHeight - barHeight;
-    const r = Math.min(4, barHeight / 2);
-    const labelVisible = daily.length <= 10 || index === 0 || index === daily.length - 1 || index % 5 === 0;
-    const label = labelVisible
-      ? `<text class="chart-axis-label" x="${x + barWidth / 2}" y="${height - 24}" text-anchor="middle">${formatDate(day.date)}</text>`
-      : '';
-    // 4px rounded top, square baseline — use a path instead of rect
-    const barPath = `M${x},${padding.top + plotHeight} V${y + r} Q${x},${y} ${x + r},${y} H${x + barWidth - r} Q${x + barWidth},${y} ${x + barWidth},${y + r} V${padding.top + plotHeight} Z`;
-    return `<g class="bar-group" tabindex="0" role="img" aria-label="${formatDate(day.date)}: ${exactNumberFormatter.format(tokens)} tokens, ${formatCurrency(day.cost)}" data-index="${index}"><path class="chart-bar" d="${barPath}"/><rect class="bar-hit" x="${x - 2}" y="${y}" width="${barWidth + 4}" height="${barHeight}" fill="transparent"/><title>${formatDate(day.date)}\n${exactNumberFormatter.format(tokens)} tokens\n${formatCurrency(day.cost)}</title></g>${label}`;
-  }).join('');
-
-  const tableRows = daily.map((day) => `<tr><td>${formatDate(day.date)}</td><td>${exactNumberFormatter.format(day.requests)}</td><td>${exactNumberFormatter.format(day.totalTokens)}</td><td>${formatCurrency(day.cost)}</td></tr>`).join('');
-
-  elements.chart.innerHTML = `
-    <div class="chart-scroll">
-      <svg viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="daily-chart-title daily-chart-desc" preserveAspectRatio="none">
-        <title id="daily-chart-title">Daily token usage</title>
-        <desc id="daily-chart-desc">Bar chart of the total tokens used each day. Hover or focus a bar for detailed values.</desc>
-        ${horizontalGrid}
-        <line class="chart-axis" x1="${padding.left}" x2="${width - padding.right}" y1="${padding.top + plotHeight}" y2="${padding.top + plotHeight}"/>
-        ${bars}
-      </svg>
-    </div>
-    <details class="chart-table">
-      <summary>View daily usage data as a table</summary>
-      <div class="table-scroll"><table><thead><tr><th>Date</th><th>Requests</th><th>Tokens</th><th>Cost</th></tr></thead><tbody>${tableRows}</tbody></table></div>
-    </details>`;
-
-  // Tooltip interaction events
-  const barGroups = elements.chart.querySelectorAll('.bar-group');
-  const showTooltip = (event, target) => {
-    const idx = Number(target.getAttribute('data-index'));
-    const day = dailyData[idx];
-    if (!day) return;
-
-    // Build tooltip DOM securely
-    elements.tooltip.innerHTML = '';
-    const dateDiv = document.createElement('div');
-    dateDiv.className = 'tooltip-date';
-    dateDiv.textContent = formatDate(day.date);
-    elements.tooltip.append(dateDiv);
-
-    const tokenRow = document.createElement('div');
-    tokenRow.className = 'tooltip-row';
-    const tokenKey = document.createElement('span');
-    tokenKey.className = 'tooltip-key';
-    const tokenValue = document.createElement('span');
-    tokenValue.className = 'tooltip-value';
-    tokenValue.textContent = exactNumberFormatter.format(day.totalTokens);
-    const tokenLabel = document.createElement('span');
-    tokenLabel.className = 'tooltip-label';
-    tokenLabel.textContent = ' tokens';
-    tokenRow.append(tokenKey, tokenValue, tokenLabel);
-
-    const costRow = document.createElement('div');
-    costRow.className = 'tooltip-row';
-    costRow.style.marginTop = '0.125rem';
-    const costValue = document.createElement('span');
-    costValue.className = 'tooltip-value';
-    costValue.textContent = formatCurrency(day.cost);
-    const costLabel = document.createElement('span');
-    costLabel.className = 'tooltip-label';
-    costLabel.textContent = ' cost';
-    costRow.append(costValue, costLabel);
-
-    elements.tooltip.append(tokenRow, costRow);
-    elements.tooltip.classList.remove('hidden');
-    elements.tooltip.setAttribute('aria-hidden', 'false');
-
-    // Positioning
-    const chartRect = elements.chart.getBoundingClientRect();
-    const barRect = target.querySelector('.chart-bar').getBoundingClientRect();
-    const tooltipX = barRect.left + barRect.width / 2 - chartRect.left;
-    const tooltipY = barRect.top - chartRect.top - 8;
-
-    elements.tooltip.style.left = `${tooltipX}px`;
-    elements.tooltip.style.top = `${tooltipY}px`;
-  };
-
-  const hideTooltip = () => {
-    elements.tooltip.classList.add('hidden');
-    elements.tooltip.setAttribute('aria-hidden', 'true');
-  };
-
-  barGroups.forEach((group) => {
-    group.addEventListener('mouseenter', (e) => showTooltip(e, group));
-    group.addEventListener('focus', (e) => showTooltip(e, group));
-    group.addEventListener('mouseleave', hideTooltip);
-    group.addEventListener('blur', hideTooltip);
-  });
-};
-
-const renderDashboard = (data) => {
-  const days = Math.max(data.daily.length, 1);
-  const summary = data.summary;
-  const successRate = summary.requests === 0 ? 0 : Math.round((summary.successfulRequests / summary.requests) * 100);
-
-  elements.keyName.textContent = data.key.name || `Key ${data.key.id}`;
-  elements.rangeDisplay.textContent = `${formatDate(data.range.from)} – ${formatDate(data.range.to)} · UTC`;
-  elements.cost.textContent = formatCurrency(summary.cost);
-  elements.averageCost.textContent = `Daily average: ${formatCurrency(summary.cost / days)}`;
-  elements.requests.textContent = exactNumberFormatter.format(summary.requests);
-  elements.successRate.textContent = `Success: ${successRate}% (${exactNumberFormatter.format(summary.successfulRequests)} of ${exactNumberFormatter.format(summary.requests)})`;
-  elements.tokens.textContent = formatTokens(summary.totalTokens);
-  elements.tokenSplit.textContent = `${formatTokens(summary.promptTokens)} prompt · ${formatTokens(summary.completionTokens)} completion`;
-
-  // Progress bar — status color by rate
-  elements.progressValue.textContent = `${successRate}%`;
-  elements.progressDetail.textContent = `${exactNumberFormatter.format(summary.successfulRequests)} of ${exactNumberFormatter.format(summary.requests)} requests completed successfully`;
-  elements.progressFill.style.width = `${successRate}%`;
-  elements.progressTrack.setAttribute('aria-valuenow', String(successRate));
-
-  // Color the fill by severity thresholds (status palette)
-  let fillColor;
-  if (successRate >= 95) fillColor = 'var(--status-good)';
-  else if (successRate >= 80) fillColor = 'var(--status-warning)';
-  else if (successRate >= 50) fillColor = 'var(--status-serious)';
-  else fillColor = 'var(--status-critical)';
-  elements.progressFill.style.backgroundColor = fillColor;
-
-  renderChart(data.daily);
-
-  elements.authSection.classList.add('hidden');
-  elements.dashboard.classList.remove('hidden');
-  elements.dashboard.style.opacity = '';
-  elements.keyStatus.classList.remove('hidden');
-};
-
-const setLoading = (isLoading) => {
-  elements.loadButton.disabled = isLoading;
-  elements.loadButton.textContent = isLoading ? 'Loading…' : 'Check Usage';
-};
-
-const showError = (message) => {
-  const existing = document.querySelector('#error-message');
-  if (existing) existing.remove();
-
-  const error = document.createElement('p');
-  error.id = 'error-message';
-  error.className = 'form-error';
-  error.textContent = message;
-  elements.authSection.append(error);
-};
-
-const loadUsage = async () => {
-  const suppliedKey = elements.credentialInput.value.trim() || activeCredential;
-  const suppliedUrl = backendUrl;
-
-  if (!suppliedKey) {
-    showError('Enter an API key to load usage.');
-    elements.credentialInput.focus();
-    return;
-  }
-
-  try {
-    const target = new URL(suppliedUrl);
-    if (!['http:', 'https:'].includes(target.protocol)) throw new TypeError();
-  } catch {
-    showError('The configured API base URL is invalid.');
-    return;
-  }
-
-  const { from, to } = dateRange(elements.rangeSelect.value);
-  setLoading(true);
-  document.querySelector('#error-message')?.remove();
-
-  // Keep frame visible at reduced opacity while refetching (dataviz: no flash/skeleton)
-  if (!elements.dashboard.classList.contains('hidden')) {
-    elements.dashboard.style.opacity = '0.5';
-  }
-
-  try {
-    const response = await fetch(`${suppliedUrl}/key/usage?from=${from}&to=${to}`, {
-      headers: { Authorization: `Bearer ${suppliedKey}` },
-      cache: 'no-store',
-    });
-    const payload = await response.json().catch(() => null);
-
-    if (!response.ok) {
-      throw new Error(payload?.error?.message || `Request failed with status ${response.status}.`);
+    if (usage.provider && !current.providers.includes(usage.provider)) {
+      current.providers.push(usage.provider);
     }
+    current.promptTokens += Number(usage.promptTokens || 0);
+    current.completionTokens += Number(usage.completionTokens || 0);
+    current.cachedTokens += Number(usage.cachedTokens || 0);
+    current.cost += Number(usage.cost || 0);
 
-    activeCredential = suppliedKey;
-    backendUrl = suppliedUrl;
-    elements.credentialInput.value = '';
-    renderDashboard(payload);
-  } catch (error) {
-    elements.dashboard.style.opacity = '';
-    showError(error instanceof Error ? error.message : 'Unable to load usage data.');
-  } finally {
-    setLoading(false);
+    if (usage.lastUsed && (!current.lastUsed || Date.parse(usage.lastUsed) > Date.parse(current.lastUsed))) {
+      current.lastUsed = usage.lastUsed;
+    }
+    grouped.set(name, current);
+  });
+
+  return [...grouped.values()].sort((a, b) => b.cost - a.cost || totalTokens(b) - totalTokens(a));
+};
+
+const formatRelativeTime = (value) => {
+  if (!value) return '—';
+  const minutes = Math.floor(Math.max(0, Date.now() - Date.parse(value)) / 60_000);
+  if (minutes < 1) return 'baru saja';
+  if (minutes < 60) return `${minutes} mnt lalu`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} jam lalu`;
+  return `${Math.floor(hours / 24)} hari lalu`;
+};
+
+const setStatus = (status, label) => {
+  elements.connectionPill.dataset.status = status;
+  elements.connectionLabel.textContent = label;
+  elements.syncDot.dataset.status = status;
+};
+
+const setConnectionView = (view, message = '') => {
+  setHidden(elements.connectionPanel, view === 'live' || view === 'stale');
+  setHidden(elements.loginForm, view !== 'auth' && view !== 'connecting');
+  setHidden(elements.blockedActions, view !== 'blocked');
+  setHidden(elements.setupDetails, view !== 'blocked');
+  setHidden(elements.formError, !message);
+  elements.formError.textContent = message;
+
+  if (view === 'checking') {
+    setStatus('checking', 'Menghubungkan');
+    elements.connectionSymbol.textContent = '↗';
+    elements.connectionEyebrow.textContent = 'MEMERIKSA KONEKSI';
+    elements.connectionTitle.textContent = 'Menghubungkan ke DailyFlo…';
+    elements.connectionMessage.textContent = 'Situs sedang memastikan API dapat dibaca dari browser ini.';
+  } else if (view === 'blocked') {
+    setStatus('blocked', 'Akses diblokir');
+    elements.connectionSymbol.textContent = '!';
+    elements.connectionEyebrow.textContent = 'SATU KONFIGURASI DIPERLUKAN';
+    elements.connectionTitle.textContent = 'DailyFlo belum mengizinkan akses dari situs ini.';
+    elements.connectionMessage.textContent = 'Browser menahan respons lintas domain karena API belum mengirim header CORS. Password tidak diminta dan tidak ada data yang dikirim dari halaman ini.';
+  } else if (view === 'auth' || view === 'connecting') {
+    setStatus(view, view === 'connecting' ? 'Menghubungkan' : 'Perlu masuk');
+    elements.connectionSymbol.textContent = '↗';
+    elements.connectionEyebrow.textContent = 'KONEKSI TERSEDIA';
+    elements.connectionTitle.textContent = 'Masuk ke DailyFlo.';
+    elements.connectionMessage.textContent = 'Password dikirim langsung ke api.dailyflo.me untuk membuat sesi. Situs ini tidak menyimpan password.';
+    elements.loginButton.disabled = view === 'connecting';
+    elements.loginButton.textContent = view === 'connecting' ? 'Menghubungkan…' : 'Masuk & mulai';
+  } else if (view === 'live') {
+    setStatus('live', 'Live');
+  } else if (view === 'stale') {
+    setStatus('stale', 'Tertunda');
   }
 };
 
-const clearKey = () => {
-  activeCredential = '';
-  backendUrl = API_BASE_URL;
-  elements.dashboard.classList.add('hidden');
-  elements.keyStatus.classList.add('hidden');
-  elements.authSection.classList.remove('hidden');
-  elements.credentialInput.value = '';
-  elements.credentialInput.focus();
+const appendText = (parent, tag, text, className) => {
+  const element = document.createElement(tag);
+  element.textContent = text;
+  if (className) element.className = className;
+  parent.append(element);
+  return element;
 };
 
-elements.loadButton.addEventListener('click', loadUsage);
-elements.credentialInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') loadUsage();
+const renderModels = (models) => {
+  elements.tableBody.replaceChildren();
+  const maxTokens = Math.max(...models.map(totalTokens), 1);
+
+  models.forEach((model, index) => {
+    const row = document.createElement('tr');
+    const modelCell = document.createElement('td');
+    const modelWrap = document.createElement('div');
+    modelWrap.className = 'model-cell';
+    appendText(modelWrap, 'span', String(index + 1).padStart(2, '0'), 'model-rank');
+    const identity = document.createElement('div');
+    appendText(identity, 'strong', model.name);
+    appendText(identity, 'span', model.providers.join(' · ') || 'provider tidak diketahui');
+    modelWrap.append(identity);
+    modelCell.append(modelWrap);
+
+    const track = document.createElement('div');
+    track.className = 'usage-track';
+    const fill = document.createElement('span');
+    fill.style.width = `${Math.max(2, (totalTokens(model) / maxTokens) * 100)}%`;
+    track.append(fill);
+    modelCell.append(track);
+
+    const tokenCell = document.createElement('td');
+    tokenCell.dataset.label = 'Token';
+    appendText(tokenCell, 'strong', compactFormatter.format(totalTokens(model)));
+    appendText(tokenCell, 'span', `${compactFormatter.format(model.promptTokens)} in · ${compactFormatter.format(model.completionTokens)} out · ${compactFormatter.format(model.cachedTokens)} cache`);
+
+    const costCell = document.createElement('td');
+    costCell.dataset.label = 'Biaya';
+    costCell.className = 'cost-cell';
+    costCell.textContent = dollarFormatter.format(model.cost);
+
+    const lastCell = document.createElement('td');
+    lastCell.dataset.label = 'Terakhir';
+    lastCell.textContent = formatRelativeTime(model.lastUsed);
+
+    row.append(modelCell, tokenCell, costCell, lastCell);
+    elements.tableBody.append(row);
+  });
+
+  setHidden(elements.tableWrap, models.length === 0);
+  setHidden(elements.emptyState, models.length > 0);
+};
+
+const renderStats = (stats) => {
+  lastStats = stats;
+  const allTokens = stats.totalPromptTokens + stats.totalCompletionTokens;
+  const cachedShare = stats.totalPromptTokens
+    ? (stats.totalCachedTokens / stats.totalPromptTokens) * 100
+    : 0;
+
+  elements.cost.textContent = dollarFormatter.format(stats.totalCost);
+  elements.costNote.textContent = 'Estimasi pada rentang waktu terpilih';
+  elements.tokens.textContent = compactFormatter.format(allTokens);
+  elements.tokenNote.textContent = `${integerFormatter.format(stats.totalPromptTokens)} input · ${integerFormatter.format(stats.totalCompletionTokens)} output`;
+  elements.cached.textContent = compactFormatter.format(stats.totalCachedTokens);
+  elements.cacheNote.textContent = `${cachedShare.toLocaleString('id-ID', { maximumFractionDigits: 1 })}% dari token input`;
+  elements.syncNote.textContent = `Sinkron ${new Date().toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })}`;
+  renderModels(aggregateModels(stats.byModel));
+};
+
+const scheduleRefresh = () => {
+  window.clearInterval(refreshTimer);
+  if (!lastStats) return;
+  refreshTimer = window.setInterval(
+    () => void loadUsage({ quiet: true }),
+    Number(elements.refreshSelect.value) * 1_000,
+  );
+};
+
+const loadUsage = async ({ quiet = false } = {}) => {
+  if (!quiet && !lastStats) setConnectionView('checking');
+  setHidden(elements.staleBanner, true);
+
+  try {
+    const response = await fetch(`${API_BASE}/api/usage/stats?period=${encodeURIComponent(period)}`, {
+      credentials: 'include',
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    });
+
+    if (response.status === 401) {
+      setConnectionView('auth');
+      window.clearInterval(refreshTimer);
+      return;
+    }
+    if (!response.ok) throw new Error(`DailyFlo merespons dengan status ${response.status}.`);
+
+    const payload = await response.json();
+    if (!isUsageStats(payload)) throw new Error('Format data usage tidak dikenali.');
+
+    renderStats(payload);
+    setConnectionView('live');
+    scheduleRefresh();
+  } catch (error) {
+    if (lastStats) {
+      setConnectionView('stale');
+      setHidden(elements.staleBanner, false);
+    } else {
+      setConnectionView('blocked');
+    }
+    window.clearInterval(refreshTimer);
+  }
+};
+
+elements.loginForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const password = elements.password.value;
+  if (!password) return;
+  setConnectionView('connecting');
+
+  try {
+    const response = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || 'Password tidak diterima.');
+    if (payload.mustChangePassword) throw new Error('Password perlu diubah melalui dashboard DailyFlo asli.');
+
+    elements.password.value = '';
+    await loadUsage();
+  } catch (error) {
+    setConnectionView('auth', error instanceof Error ? error.message : 'Proses masuk gagal.');
+  }
 });
-elements.logoutButton.addEventListener('click', clearKey);
-elements.rangeSelect.addEventListener('change', () => {
-  if (activeCredential && backendUrl) loadUsage();
+
+elements.periodControl.addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-period]');
+  if (!button || button.dataset.period === period) return;
+  period = button.dataset.period;
+  elements.periodControl.querySelectorAll('button').forEach((item) => {
+    const active = item === button;
+    item.classList.toggle('is-active', active);
+    item.setAttribute('aria-pressed', String(active));
+  });
+  void loadUsage();
 });
+
+elements.refreshSelect.addEventListener('change', scheduleRefresh);
+elements.retryButton.addEventListener('click', () => void loadUsage());
+elements.staleRetry.addEventListener('click', () => void loadUsage());
+
+void loadUsage();

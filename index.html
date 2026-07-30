@@ -1,90 +1,199 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-DailyFlo | 9Router Usage
-  <link rel="stylesheet" href="/src/style.css">
-</head>
-<body>
-  <header>
-    <div>
-      <h1>DailyFlo</h1>
-      <div class="subtitle">9Router Usage Checker</div>
-    </div>
-    <div id="key-status-container" class="hidden">
-      <div class="status-badge">
-        <span class="status-dot active"></span>
-        <span id="key-name-display">Key: ...</span>
-      </div>
-    </div>
-  </header>
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0f0f">
+    <meta name="color-scheme" content="dark">
+    <meta
+      name="description"
+      content="Ringkasan real-time biaya USD dan pemakaian token per model dari DailyFlo."
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dailyflo.me/">
+    <meta property="og:title" content="DailyFlo Usage Monitor">
+    <meta
+      property="og:description"
+      content="USD + token per model, diperbarui langsung dari DailyFlo."
+    >
+    <meta property="og:image" content="https://dailyflo.me/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DailyFlo Usage Monitor">
+    <meta
+      name="twitter:description"
+      content="USD + token per model, diperbarui langsung dari DailyFlo."
+    >
+    <meta name="twitter:image" content="https://dailyflo.me/og.png">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <title>DailyFlo Usage Monitor</title>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <main class="shell" id="top">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="DailyFlo Usage Monitor">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <span>
+            <strong>DailyFlo</strong>
+            <small>usage monitor</small>
+          </span>
+        </a>
 
-  <div id="auth-section" class="card">
-    <div class="form-group">
-      <label for="api-key-input">Enter your 9Router API Key</label>
-      <div class="input-row">
-        <input type="password" id="api-key-input" placeholder="sk-..." autocomplete="off">
-        <button id="load-btn">Check Usage</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="dashboard-content" class="hidden">
-    <div class="toolbar">
-      <div class="subtitle" id="range-display">Date Range: -</div>
-      <div class="toolbar-actions">
-        <select id="range-select">
-          <option value="7">Last 7 Days</option>
-          <option value="30" selected>Last 30 Days</option>
-        </select>
-        <button id="logout-btn" class="secondary">Clear Key</button>
-      </div>
-    </div>
-
-    <div class="tiles-grid">
-      <div class="tile">
-        <div class="tile-label">Total Cost</div>
-        <div class="tile-value" id="val-cost">$0.00</div>
-        <div class="tile-subtext" id="val-avg-cost-daily">Daily average: $0.00</div>
-      </div>
-      <div class="tile">
-        <div class="tile-label">Requests</div>
-        <div class="tile-value" id="val-requests">0</div>
-        <div class="tile-subtext" id="val-success-rate">Success: -</div>
-      </div>
-      <div class="tile">
-        <div class="tile-label">Total Tokens</div>
-        <div class="tile-value" id="val-tokens">0</div>
-        <div class="tile-subtext" id="val-token-split">Prompt / Comp split</div>
-      </div>
-    </div>
-
-    <div class="card progress-card">
-      <div class="progress-heading">
-        <div>
-          <h2>Request Success Rate</h2>
-          <p id="progress-detail">0 of 0 requests completed successfully</p>
+        <div class="connection-pill" id="connection-pill">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="connection-label">Menghubungkan</span>
         </div>
-        <span id="progress-value">0%</span>
-      </div>
-      <div class="progress-track" role="progressbar" aria-labelledby="progress-detail" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-    </div>
+      </header>
 
-    <div class="card">
-      <h2 class="section-title">Daily Token Usage</h2>
-      <p class="section-description">Total tokens used per day. Cost is available in the accessible data table.</p>
-      <div class="chart-container" id="chart-parent"></div>
-      <div id="chart-tooltip" class="chart-tooltip hidden" role="tooltip" aria-hidden="true"></div>
-    </div>
-  </div>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">MODEL SPEND · USD + TOKEN</p>
+          <h1>Pemakaian model, tanpa hiruk-pikuk.</h1>
+          <p class="hero-copy">
+            Biaya dan token DailyFlo diringkas dalam satu layar. Data dibaca
+            langsung dari sumbernya—tanpa backend tambahan dan tanpa disimpan
+            oleh situs ini.
+          </p>
+        </div>
 
-  <div class="footer">
-    Data provided by 9Router API. Stored keys never leave memory.
-  </div>
+        <div class="hero-controls" aria-label="Pengaturan data">
+          <div class="segmented-control" id="period-control" aria-label="Rentang waktu">
+            <button type="button" data-period="today" class="is-active" aria-pressed="true">Hari ini</button>
+            <button type="button" data-period="24h" aria-pressed="false">24 jam</button>
+            <button type="button" data-period="7d" aria-pressed="false">7 hari</button>
+            <button type="button" data-period="30d" aria-pressed="false">30 hari</button>
+          </div>
+          <label class="refresh-control">
+            <span>Perbarui</span>
+            <select id="refresh-select" aria-label="Interval pembaruan">
+              <option value="5">5 dtk</option>
+              <option value="10" selected>10 dtk</option>
+              <option value="30">30 dtk</option>
+              <option value="60">60 dtk</option>
+            </select>
+          </label>
+        </div>
+      </section>
 
-  <script type="module" src="/src/main.js"></script>
-</body>
+      <section class="metrics-grid" aria-label="Ringkasan pemakaian">
+        <article class="metric-card metric-card-primary">
+          <div class="metric-heading">
+            <span>Estimasi biaya</span><span>01</span>
+          </div>
+          <strong class="metric-value metric-money" id="total-cost">—</strong>
+          <p id="cost-note">Menunggu koneksi ke DailyFlo</p>
+        </article>
+        <article class="metric-card">
+          <div class="metric-heading">
+            <span>Total token</span><span>02</span>
+          </div>
+          <strong class="metric-value" id="total-tokens">—</strong>
+          <p id="token-note">Input + output, tanpa menghitung cache dua kali</p>
+        </article>
+        <article class="metric-card">
+          <div class="metric-heading">
+            <span>Token cache</span><span>03</span>
+          </div>
+          <strong class="metric-value" id="cached-tokens">—</strong>
+          <p id="cache-note">Bagian cache dari token input</p>
+        </article>
+      </section>
+
+      <section class="connection-panel" id="connection-panel" aria-live="polite">
+        <div class="connection-symbol" id="connection-symbol" aria-hidden="true">↗</div>
+        <div class="connection-content">
+          <p class="eyebrow" id="connection-eyebrow">MEMERIKSA KONEKSI</p>
+          <h2 id="connection-title">Menghubungkan ke DailyFlo…</h2>
+          <p id="connection-message">
+            Situs sedang memastikan API dapat dibaca dari browser ini.
+          </p>
+
+          <form class="login-form hidden" id="login-form">
+            <label for="password-input">
+              <span>Password dashboard</span>
+              <input
+                id="password-input"
+                type="password"
+                autocomplete="current-password"
+                required
+              >
+            </label>
+            <button class="button button-primary" type="submit" id="login-button">
+              Masuk & mulai
+            </button>
+          </form>
+
+          <div class="connection-actions hidden" id="blocked-actions">
+            <button class="button button-primary" type="button" id="retry-button">Coba lagi</button>
+            <a
+              class="button button-secondary"
+              href="https://api.dailyflo.me/dashboard/usage"
+              target="_blank"
+              rel="noreferrer"
+            >Buka dashboard asli</a>
+          </div>
+
+          <p class="form-error hidden" id="form-error" role="alert"></p>
+
+          <details class="setup-details hidden" id="setup-details">
+            <summary>Lihat konfigurasi API yang diperlukan</summary>
+            <p>
+              Respons login, usage, dan OPTIONS perlu mengizinkan origin situs ini:
+            </p>
+            <pre>Access-Control-Allow-Origin: https://dailyflo.me
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Headers: Content-Type
+Vary: Origin</pre>
+          </details>
+        </div>
+      </section>
+
+      <section class="model-panel" aria-labelledby="model-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">PER MODEL</p>
+            <h2 id="model-heading">Di mana token dan dolar dipakai</h2>
+          </div>
+          <div class="sync-note" aria-live="polite">
+            <span class="status-dot" id="sync-dot" aria-hidden="true"></span>
+            <span id="sync-note">Belum tersinkron</span>
+          </div>
+        </div>
+
+        <div class="stale-banner hidden" id="stale-banner" role="status">
+          <span>Pembaruan terakhir gagal. Data sebelumnya tetap ditampilkan.</span>
+          <button type="button" id="stale-retry">Coba sekarang</button>
+        </div>
+
+        <div class="model-table-wrap hidden" id="model-table-wrap">
+          <table class="model-table">
+            <thead>
+              <tr>
+                <th scope="col">Model</th>
+                <th scope="col">Token</th>
+                <th scope="col">Biaya</th>
+                <th scope="col">Terakhir</th>
+              </tr>
+            </thead>
+            <tbody id="model-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+          <span aria-hidden="true">∿</span>
+          <p>Data model akan muncul setelah koneksi berhasil.</p>
+        </div>
+      </section>
+
+      <footer>
+        <span>DailyFlo Usage Monitor</span>
+        <span>Data tetap berada di antara browser Anda dan DailyFlo.</span>
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
