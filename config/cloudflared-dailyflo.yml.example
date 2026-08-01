@@ -1,0 +1,7 @@
+tunnel: dailyflo-ai
+credentials-file: /etc/cloudflared/dailyflo-ai.json
+
+ingress:
+  - hostname: ai.dailyflo.me
+    service: http://127.0.0.1:20128
+  - service: http_status:404
